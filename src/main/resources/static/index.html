@@ -1,26 +1,26 @@
 <script>
 
-alert("Hello world!");
+console.log("Hello world!");
 
 var socket = new WebSocket("ws://localhost:8888/websocket");
 
 socket.onopen = function(e) {
-    alert("[open] Connest just open");
-    alert("Sending data to server");
+    console.log("[open] Connest just open");
+    console.log("Sending data to server");
     socket.send("My name is Jhon");
 };
 
 socket.onmessage = function(event) {
-    alert(`[message] Get data from server: ${event.data}`);
+    console.log(`[message] Get data from server: ${event.data}`);
 };
 
 socket.onclose = function(event) {
     if (event.wasClean) {
-        alert(`[close] Connest just closed successful, код=${event.code} причина=${event.reason}`);
+        console.log(`[close] Connest just closed successful, код=${event.code} причина=${event.reason}`);
     } else {
         // например, сервер убил процесс или сеть недоступна
         // обычно в этом случае event.code 1006
-        alert('[close] Connest just closed');
+        console.log('[close] Connest just closed');
     }
 };
 
