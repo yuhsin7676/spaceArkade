@@ -4,8 +4,11 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public abstract class Object {
     
-    private Vector2D location;
-    private int id;
+    public Vector2D location;
+    public Vector2D size = new Vector2D(10, 10);
+    public double r = 10.;
+    public boolean isCircle = false;
+    public Vector2D velocity = new Vector2D(0., 0.);
 
     public Object(Vector2D location, int id) {
         this.location = location;
@@ -18,13 +21,8 @@ public abstract class Object {
     public void setLocation(Vector2D location) {
         this.location = location;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    
+    public void update(double deltaSeconds){
     }
     
 }

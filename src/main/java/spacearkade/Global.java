@@ -1,9 +1,12 @@
 package spacearkade;
 
 import spacearkade.game.World;
+import spacearkade.game.StaticComponent;
+import spacearkade.game.DynamicComponent;
 
 import java.util.Map;
 import java.util.HashMap;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import spacearkade.game.Player;
 
 public class Global {
@@ -15,6 +18,8 @@ public class Global {
     public static int createWorld(){
         World world = new World(800, 600);
         int worldId = Global.primary;
+        Vector2D location = new Vector2D(100, 100);
+        world.createNewObject(new DynamicComponent(location, 1));
         Global.mapWorld.put(worldId, world);
         Global.primary++;
         return worldId;
@@ -45,7 +50,7 @@ public class Global {
             world.removePlayer1();
         else if(player.playerNumber == 2)
             world.removePlayer2();
-        if(world.player1 == null && world.player2 == null)
+        if(world.player1 == false && world.player2 == false)
             Global.mapWorld.remove(world);
     }
             

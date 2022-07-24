@@ -2,8 +2,8 @@ package spacearkade;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -24,15 +24,14 @@ public class GameLoop extends ApplicationAdapter{
     public void create() {
         socketHandler.setConnectListener(session -> {
             Player player = Global.addPlayerToWorld(session.getId());
-            events.add("Player add to world: " + player.worldNumber + ", and get number: " + player.playerNumber);
+            //events.add("Player add to world: " + player.worldNumber + ", and get number: " + player.playerNumber);
         });
         socketHandler.setDisconnectListener(session -> {
             Global.removePlayer(session.getId());
-            events.add(session.getId() + " just disconnect");
+            //events.add(session.getId() + " just disconnect");
         });
         socketHandler.setMessageListener(((session, message) -> {
-            
-            events.add(session.getId() + " said " + message);
+            //events.add(session.getId() + " said " + message);
         }));
     }
 
@@ -42,12 +41,15 @@ public class GameLoop extends ApplicationAdapter{
             try{
                 Player player = Global.mapPlayer.get(session.getId());
                 World world = player.worldPointer;
-                if(world.player1 != null && world.player2 != null)
-                    session.sendMessage(new TextMessage("yes"));
+                if(world.player1 == true && world.player2 == true){
+                    world.update();
+                    String json = new Gson().toJson(world);
+                    session.sendMessage(new TextMessage(json));
+                }
                 else
                     session.sendMessage(new TextMessage("no"));
-                for(String event : events)
-                    session.sendMessage(new TextMessage(event));
+                //for(String event : events)
+                    //session.sendMessage(new TextMessage(event));
             }
             catch(IOException e){
                 e.printStackTrace();

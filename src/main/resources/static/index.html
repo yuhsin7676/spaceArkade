@@ -1,21 +1,33 @@
+<html>
+<body>
+    
+    <canvas id="canvas" width="800" height="600"></canvas>
+    
+</body>
+</html>
 <script>
 
-console.log("Hello world!");
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext('2d');
 
 var socket = new WebSocket("ws://localhost:8888/websocket");
 
 document.addEventListener('keydown', function(event) {
-    if (event.code == 'KeyZ') {
-        socket.send("111");
-    }
+    console.log("z has been pressed");
 });
 
 socket.onopen = function(e) {
-    console.log("[open] Connest just open");
+    socket.send("222");
 };
 
 socket.onmessage = function(event) {
-    console.log(`[message] Get data from server: ${event.data}`);
+    if(event.data != "no"){
+        var data = JSON.parse(event.data);
+        var obj = data.objects[0];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(obj.location.x, obj.location.y, obj.size.x, obj.size.y);
+    }
+    socket.send("222");
 };
 
 socket.onclose = function(event) {
