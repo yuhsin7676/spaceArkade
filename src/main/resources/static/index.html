@@ -4,10 +4,14 @@ console.log("Hello world!");
 
 var socket = new WebSocket("ws://localhost:8888/websocket");
 
+document.addEventListener('keydown', function(event) {
+    if (event.code == 'KeyZ') {
+        socket.send("111");
+    }
+});
+
 socket.onopen = function(e) {
     console.log("[open] Connest just open");
-    console.log("Sending data to server");
-    socket.send("My name is Jhon");
 };
 
 socket.onmessage = function(event) {
