@@ -1,30 +1,74 @@
 package spacearkade.game;
 
+import static java.lang.Math.sqrt;
+import static java.lang.Math.abs;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class World {
     
+    // Переменные
     private int width;
     private int height;
     private int primary = 0;
     public boolean player1 = false;
     public boolean player2 = false;
     public Map<Integer, Object> objects = new HashMap<Integer, Object>();
-    public double deltaSeconds = 1;
+    public Map<Integer, StaticComponent> staticComponents = new HashMap<Integer, StaticComponent>();
+    public Map<Integer, DynamicComponent> dynamicComponents = new HashMap<Integer, DynamicComponent>();
+    public double n = 1; // Точность расчета коллизий
+    public int frame = 60; // Учет количества кадров
 
+    // Конструктор
     public World(int width, int height) {
         this.width = width;
         this.height = height;
     }
     
+    ////////////////// Функции /////////////////////////
+    
+    // ???
     public int createNewObject(Object object){
         objects.put(this.primary, object);
         int worldId = this.primary;
         this.primary++;
         return worldId;
     }
+		
+    // Спавн актора
+    public void spawnActor(Vector2D loc_vvod, Vector2D vel_vvod){
+        DynamicComponent dynamicComponent = new DynamicComponent(loc_vvod, this.primary);
+        dynamicComponent.velocity = vel_vvod;
+        dynamicComponent.typeName = "Actor";
+        dynamicComponents.put(this.primary, dynamicComponent);
+        this.primary++;
+    };
+
+    // Создание компонента мира
+    public void createScene(Vector2D loc_vvod){
+        StaticComponent staticComponent = new StaticComponent(loc_vvod, this.primary);
+        staticComponent.infinityMass = true;
+        staticComponent.typeName = "Scene";
+        staticComponents.put(this.primary, staticComponent);
+        this.primary++;
+    };
+
+    // Удаления объектов разных классов
+    public void deleteActor(int i){
+        dynamicComponents.remove(i);
+    };
+
+    public void deleteScene(int i){
+        staticComponents.remove(i);
+    };
+
+    // Удаление всех объектов в мире
+    public void clearWorld(){
+        dynamicComponents.clear();
+        staticComponents.clear();
+    };
     
     public int addPlayer(Player player){
         if(this.player1 == false){
@@ -55,20 +99,40 @@ public class World {
         return primary;
     }
     
+    // Пересчет координат всех объектов и проверка событий мыши
     public void update(){
-        for(Map.Entry<Integer, Object> entry : objects.entrySet()){
-            relationshipWorld(entry.getValue());
-            entry.getValue().update(deltaSeconds);
+
+        // Обнуление eventHit
+        for(Map.Entry<Integer, DynamicComponent> entry : dynamicComponents.entrySet())
+            entry.getValue().eventHit = new ArrayList<EventHit>();
+
+        // Проверка столкновений акторов и пересчет координат по закону сохранения импульса
+        for(int k = 0; k < n; k++){
+            for(Map.Entry<Integer, DynamicComponent> dynamicComponent : dynamicComponents.entrySet()){
+                
+                relationshipWorld(dynamicComponent.getValue());
+                for(Map.Entry<Integer, StaticComponent> staticComponent : staticComponents.entrySet())
+                    relationshipObjects(dynamicComponent.getValue(), staticComponent.getValue());
+                for(Map.Entry<Integer, DynamicComponent> dynamicComponent2 : dynamicComponents.entrySet()){
+                    if(!dynamicComponent.getValue().collision && !dynamicComponent.getValue().equals(dynamicComponent2.getValue()))
+                        relationshipObjects(dynamicComponent.getValue(), dynamicComponent2.getValue());
+                }
+                dynamicComponent.getValue().location = dynamicComponent.getValue().location.add(dynamicComponent.getValue().d);
+            }
+
+            // Сброс свойств collision (что это такое, описано ниже)
+            for(Map.Entry<Integer, DynamicComponent> dynamicComponent : dynamicComponents.entrySet())
+                dynamicComponent.getValue().collision = false;
         }
-    }
-    
+
+    }    
     
     void relationshipWorld(Object dynamicCombonent){
 			
         double cx = dynamicCombonent.location.getX();
         double cy = dynamicCombonent.location.getY();
-        double vx = dynamicCombonent.velocity.getX() * deltaSeconds;
-        double vy = dynamicCombonent.velocity.getY() * deltaSeconds;
+        double vx = dynamicCombonent.velocity.getX()/(n*frame);
+        double vy = dynamicCombonent.velocity.getY()/(n*frame);
         double w,h;
         if(dynamicCombonent.isCircle) w = h = 2*dynamicCombonent.r;
         else{
@@ -76,20 +140,404 @@ public class World {
             h = dynamicCombonent.size.getY();
         }
 
-        if (cx + vx < w/2 ){
-            dynamicCombonent.velocity = dynamicCombonent.velocity.add(new Vector2D( -2 * dynamicCombonent.velocity.getX(), 0.));
+        // Столкновение с краем мира по x
+        if (cx + vx < w/2){
+            dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
+            dynamicCombonent.d = new Vector2D(-vx + w - 2*cx, dynamicCombonent.d.getY());
+            dynamicCombonent.collision = true;
+
+            writeEventHitWithWorld(dynamicCombonent);
         }
         else if (cx + vx > this.width - w/2){
-            dynamicCombonent.velocity = dynamicCombonent.velocity.add(new Vector2D( -2 * dynamicCombonent.velocity.getX(), 0.));
+            dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
+            dynamicCombonent.d = new Vector2D(-vx + 2*(this.width - w/2) - 2*cx, dynamicCombonent.d.getY());
+            dynamicCombonent.collision = true;
+
+            writeEventHitWithWorld(dynamicCombonent);
+        }
+        else{
+            dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
         }
 
+        // Столкновение с краем мира по y
         if (cy + vy < h/2){
-            dynamicCombonent.velocity = dynamicCombonent.velocity.add(new Vector2D( 0., -2 * dynamicCombonent.velocity.getY()));
+            dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
+            dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + h - 2*cy);
+            dynamicCombonent.collision = true;
+
+            writeEventHitWithWorld(dynamicCombonent);
         }
         else if (cy + vy > this.height - h/2){
-            dynamicCombonent.velocity = dynamicCombonent.velocity.add(new Vector2D( 0., -2 * dynamicCombonent.velocity.getY()));
+            dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
+            dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + 2*(this.height - h/2) - 2*cy);
+            dynamicCombonent.collision = true;
+
+            writeEventHitWithWorld(dynamicCombonent);
+        }
+        else{
+            dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
         }
         
-}
+    }
+    
+    // Коллизии объектов друг с другом
+    void relationshipObjects(Object a1, Object a2){
+        if (!a1.collision && (!a2.collision || a2.typeName.equals("Scene")) && a1.enableCollision && a2.enableCollision){
+
+            // Столкновение 2 окружностей
+            if (a1.isCircle && a2.isCircle){
+                double dr = a1.r + a2.r;
+                double m1 = a1.m, m2 = a2.m;
+
+                // Обозначим скорости
+                Vector2D v10 = a1.velocity.scalarMultiply(1/n/frame);
+                Vector2D v20 = a2.velocity.scalarMultiply(1/n/frame);
+
+                if (a1.location.add(v10).subtract(a2.location.add(v20)).getNorm() < dr){ // Что дает getNorm, надо 
+
+                    // Находим точку соударения(вернее,a - часть пути до соударения???)
+                    double cx = a2.location.getX() - a1.location.getX();
+                    double cy = a2.location.getY() - a1.location.getY();
+                    double vx = v20.getX() - v10.getX();
+                    double vy = v20.getY() - v10.getY(); 
+                    double part;
+                    if(vx != 0 || vy != 0){
+                        double D = -(cy*vx - cx*vy)*(cy*vx - cx*vy) + dr*dr*(vx*vx + vy*vy);
+                        if (D < 0) D = 0;
+                        part = ( - (cx*vx + cy*vy) - sqrt(D))/(vx*vx + vy*vy);
+                    }
+                    else{
+                        part = 0.99;
+                    }
+
+                    // Обозначим точки удара
+                    Vector2D coor1 = a1.location.add(part, v10);
+                    Vector2D coor2 = a2.location.add(part, v20);
+
+                    // Находим нормальные и тангенсальные составляющие скоростей
+                    Vector2D vOs = coor2.subtract(coor1);
+                    Vector2D vn1 = new Vector2D(0, 0);
+                    Vector2D vn2 = new Vector2D(0, 0);
+                    Vector2D vt1 = new Vector2D(0, 0);
+                    Vector2D vt2 = new Vector2D(0, 0);
+                    Vector2D v1 = new Vector2D(0, 0);
+                    Vector2D v2 = new Vector2D(0, 0);
+                    if (v10.getNorm() != 0){
+                        double cos1 = v10.dotProduct(vOs)/( v10.getNorm()*vOs.getNorm() ); // Скалярное произведением векторов?
+                        vn1 = vOs.scalarMultiply(v10.getNorm() * cos1/vOs.getNorm());
+                        vt1 = v10.subtract(vn1);
+                    }
+                    else{
+                        vn1 = vt1 = new Vector2D(0, 0);
+                    }
+
+                    if(v20.getNorm() != 0){
+                        double cos2 = v20.dotProduct(vOs)/(v20.getNorm() * vOs.getNorm());
+                        vn2 = vOs.scalarMultiply(v20.getNorm() * cos2/vOs.getNorm());
+                        vt2 = v20.subtract(vn2);
+                    }
+                    else{
+                        vn2 = vt2 = new Vector2D(0, 0);
+                    }
+
+                    // Изменяем скорости
+                    if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+                        v1 = vn2.add(vt1);
+                        v2 = vn1.add(vt2);
+                    }
+                    else if(a1.infinityMass && !a2.infinityMass){
+                        v1 = vn1.add(vt1);
+                        v2 = vn1.scalarMultiply(2).subtract(vn2).add(vt2);
+                    }
+                    else if(!a1.infinityMass && a2.infinityMass){
+                        v1 = vn2.scalarMultiply(2).subtract(vn1).add(vt1);
+                        v2 = vn2.add(vt2);
+                    }
+                    else if(!a1.infinityMass && !a2.infinityMass){
+                        v1 = (vn1.scalarMultiply(m1/m2-1).add(2, vn2)).scalarMultiply(m2/(1+m1)).add(vt1);
+                        v2 = (vn2.scalarMultiply(m2/m1-1).add(2, vn1)).scalarMultiply(m1/(1+m2)).add(vt2);
+                    }
+                    a1.velocity = v1.scalarMultiply(n*frame);
+                    a2.velocity = v2.scalarMultiply(n*frame);
+
+                    //
+                    a1.d = v10.scalarMultiply(part).add(1-part, v1);
+                    a2.d = v20.scalarMultiply(part).add(1-part, v2);
+                    a1.collision = true;
+                    a2.collision = true;
+
+                    writeEventHits(a1, a2);
+
+                }
+                else{
+                    a1.d = a1.velocity.scalarMultiply(1/n/frame);
+                    a2.d = a2.velocity.scalarMultiply(1/n/frame);
+                }
+            }
+
+            // Столкновение окружности и прямоугольника
+            else if ((a1.isCircle && !a2.isCircle) || (!a1.isCircle && a2.isCircle)){
+
+                // Определим, кто круг, а кто прямоугольник
+                Object aCirc, aRect;
+                if(a1.isCircle){ 
+                    aCirc = a1; 
+                    aRect = a2;
+                }
+                else{
+                    aCirc = a2;
+                    aRect = a1;
+                }
+
+                double mCirc = aCirc.m, mRect = aRect.m;    // Массы
+                double w = aRect.size.getX();
+                double h = aRect.size.getY();  // Размеры прямоугольника
+                double r = aCirc.r;                          // Размеры круга
+                Vector2D Cc0 = aCirc.location;                   // Начальная координата круга
+                Vector2D Vc0 = aCirc.velocity.scalarMultiply(1/n/frame);              // Начальная скорость круга
+                Vector2D Cr0 = aRect.location;                   // Начальная координата прямоугольника
+                Vector2D Vr0 = aRect.velocity.scalarMultiply(1/n/frame);              // Начальная скорость прямоугольника
+                Vector2D Vc, Vr;                              // Конечные скорости
+                double part, partX = 1, partY = 1;
+
+                // Определим, есть ли соударение
+                if(abs((Cc0.getX() + Vc0.getX()) - (Cr0.getX() + Vr0.getX())) < (r + w/2) && abs((Cc0.getY() + Vc0.getY()) - (Cr0.getY() + Vr0.getY())) < (r + h/2)){
+
+                    /////// По какой оси пересечение раньше? ////////////
+                    // Слева или справа
+                    if( Cc0.getX() <= Cr0.getX() )
+                        partX = (r + w/2 + Cc0.getX() - Cr0.getX())/(Vr0.getX() - Vc0.getX());
+                    else
+                        partX = (r + w/2 + Cr0.getX() - Cc0.getX())/(Vc0.getX() - Vr0.getX());
+
+                    // Либо сверху или снизу
+                    if( Cc0.getY() <= Cr0.getY() )
+                        partY = (r + h/2 + Cc0.getY() - Cr0.getY())/(Vr0.getY() - Vc0.getY());
+                    else if( Cc0.getY() >= Cr0.getY() )
+                        partY = (r + h/2 + Cr0.getY() - Cc0.getY())/(Vc0.getY() - Vr0.getY());
+
+                    // Обозначим возможные точки соударения
+                    Vector2D Ccx = Cc0.add(partX, Vc0);
+                    Vector2D Crx = Cr0.add(partX, Vr0);
+
+                    Vector2D Ccy = Cc0.add(partY, Vc0);
+                    Vector2D Cry = Cr0.add(partY, Vr0);
+
+                    // Там ли произошли пересечения?
+                    if (!((Ccx.getY() + r >= Crx.getY() - h/2) && (Ccx.getY() - r <= Crx.getY() + h/2))) partX = 2;
+                    if (!((Ccy.getX() + r >= Cry.getX() - w/2) && (Ccy.getX() - r <= Cry.getX() + w/2))) partY = 2;
+
+                    // Пересечение слева или справа!
+                    if(partX < partY){
+                        part = partX;
+
+                        // Изменяем скорости 
+                        Vr = new Vector2D(0, 0);
+                        Vc = new Vector2D(0, 0);
+
+                        if(aRect.infinityMass && aCirc.infinityMass && aRect.typeName.equals("Actor") && aCirc.typeName.equals("Actor")){
+                            Vr = new Vector2D(Vc0.getX(), Vr0.getY());
+                            Vc = new Vector2D(Vr0.getX(), Vc0.getY());
+                        }
+                        else if(aRect.infinityMass && !aCirc.infinityMass){
+                            Vr = Vr0;
+                            Vc = new Vector2D(2*Vr0.getX() - Vc0.getX(), Vc0.getY());
+                        }
+                        else if(!aRect.infinityMass && aCirc.infinityMass){
+                            Vr = new Vector2D(2*Vc0.getX() - Vr0.getX(), Vc0.getY());
+                            Vc = Vc0;
+                        }
+                        else if(!aRect.infinityMass && !aCirc.infinityMass){
+                            Vr = new Vector2D((Vr0.getX()*(mRect/mCirc-1) + Vc0.getX()*2)/(1+mRect/mCirc), Vr0.getY());
+                            Vc = new Vector2D((Vc0.getX()*(mCirc/mRect-1) + Vr0.getX()*2)/(1+mCirc/mRect), Vc0.getY());
+                        }
+                        aCirc.velocity = Vc.scalarMultiply(n*frame);
+                        aRect.velocity = Vr.scalarMultiply(n*frame);
+
+                        aCirc.d = Vc0.scalarMultiply(part).add(1-part, Vc);
+                        aRect.d = Vr0.scalarMultiply(part).add(1-part, Vr);
+                        aCirc.collision = true;
+                        aRect.collision = true;
+
+                        writeEventHits(a1, a2);
+                    }
+
+                    // Пересечение сверху или снизу!
+                    else if (partX >= partY){ // Не забудь рассмотреть углы
+                        part = partY;
+
+                        // Изменяем скорости
+                        if(aRect.infinityMass && aCirc.infinityMass){
+                            Vr = new Vector2D(Vr0.getX(), Vc0.getY());
+                            Vc = new Vector2D(Vc0.getX(), Vr0.getY());
+                        }
+                        else if(aRect.infinityMass && !aCirc.infinityMass){
+                            Vr = Vr0;
+                            Vc = new Vector2D(Vc0.getX(), 2*Vr0.getY() - Vc0.getY());
+                        }
+                        else if(!aRect.infinityMass && aCirc.infinityMass){
+                            Vr = new Vector2D(Vr0.getX(), 2*Vc0.getY() - Vr0.getY());
+                            Vc = Vc0;
+                        }
+                        else{
+                            Vr = new Vector2D(Vr0.getX(), (Vr0.getY()*(mRect/mCirc-1) + Vc0.getY()*2)/(1+mRect/mCirc));
+                            Vc = new Vector2D(Vc0.getX(), (Vc0.getY()*(mCirc/mRect-1) + Vr0.getY()*2)/(1+mCirc/mRect));
+                        }
+                        aCirc.velocity = Vc.scalarMultiply(n*frame);
+                        aRect.velocity = Vr.scalarMultiply(n*frame);
+
+                        aCirc.d = Vc0.scalarMultiply(part).add(1-part, Vc);
+                        aRect.d = Vr0.scalarMultiply(part).add(1-part, Vr);
+                        aCirc.collision = true;
+                        aRect.collision = true;
+
+                        writeEventHits(a1, a2);
+                    }
+                }
+                else{
+                    a1.d = a1.velocity.scalarMultiply(1/n/frame);
+                    a2.d = a2.velocity.scalarMultiply(1/n/frame);
+                }
+            }
+
+            // Столкновение 2 прямоугольников
+            else if (!a1.isCircle && !a2.isCircle){
+
+                double m1 = a1.m, m2 = a2.m;
+                double w1 = a1.size.getX(), w2 = a2.size.getX(), h1 = a1.size.getY(), h2 = a2.size.getY(); 
+                Vector2D c10 = a1.location, c20 = a2.location;
+                Vector2D v10 = a1.velocity.scalarMultiply(1/n/frame), v20 = a2.velocity.scalarMultiply(1/n/frame);           
+                Vector2D v1, v2;  // Конечные скорости
+                double a, ax = 1, ay = 1;
+
+                // Определим, есть ли соударение
+                if(abs((c10.getX() + v10.getX()) - (c20.getX() + v20.getX())) < (w1/2 + w2/2) && abs((c10.getY() + v10.getY()) - (c20.getY() + v20.getY())) < (h1/2 + h2/2)){
+
+                    /////// По какой оси пересечение раньше? ////////////
+                    // Слева или справа
+                    if( c10.getX() <= c20.getX() ){
+                        ax = (w1/2 + w2/2 + c10.getX() - c20.getX())/(v20.getX() - v10.getX());
+                    }
+                    else if( c10.getX() >= c20.getX() ){
+                        ax = (w1/2 + w2/2 + c20.getX() - c10.getX())/(v10.getX() - v20.getX());
+                    }
+
+                    // Либо сверху или снизу
+                    if( c10.getY() <= c20.getY() ){
+                        ay = (h1/2 + h2/2 + c10.getY() - c20.getY())/(v20.getY() - v10.getY());
+                    }
+                    else if( c10.getY() >= c20.getY() ){
+                        ay = (h1/2 + h2/2 + c20.getY() - c10.getY())/(v10.getY() - v20.getY());
+                    }
+
+                    // Обозначим возможные точки соударения
+                    Vector2D c2x = c20.add(ax, v20);
+                    Vector2D c1x = c10.add(ax, v10);
+
+                    Vector2D c2y = c20.add(ay, v20);
+                    Vector2D c1y = c10.add(ay, v10);
+
+                    // Там ли произошли пересечения?
+                    if (!((c2x.getY() + h2/2 >= c1x.getY() - h1/2) && (c2x.getY() - h2/2 <= c1x.getY() + h1/2))) ax = 2;
+                    if (!((c2y.getX() + w2/2 >= c1y.getX() - w1/2) && (c2y.getX() - w2/2 <= c1y.getX() + w1/2))) ay = 2;
+
+                    // Пересечение слева или справа!
+                    if(ax < ay){
+                        a = ax;
+
+                        // Изменяем скорости
+                        v1 = new Vector2D(0, 0);
+                        v2 = new Vector2D(0, 0);
+
+                        if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+                            v1 = new Vector2D(v20.getX(), v10.getY());
+                            v2 = new Vector2D(v10.getX(), v20.getY());
+                        }
+                        else if(a1.infinityMass && !a2.infinityMass){
+                            v1 = v10;
+                            v2 = new Vector2D(2*v10.getX() - v20.getX(), v20.getY());
+                        }
+                        else if(!a1.infinityMass && a2.infinityMass){
+                            v1 = new Vector2D(2*v20.getX() - v10.getX(), v10.getY());
+                            v2 = v20;
+                        }
+                        else if(!a1.infinityMass && !a2.infinityMass){
+                            v1 = new Vector2D((v10.getX()*(m1/m2-1) + v20.getX()*2)/(1+m1/m2), v10.getY());
+                            v2 = new Vector2D((v20.getX()*(m2/m1-1) + v10.getX()*2)/(1+m2/m1), v20.getY());
+                        }
+                        a1.velocity = v1.scalarMultiply(n*frame);
+                        a2.velocity = v2.scalarMultiply(n*frame);
+
+                        a1.d = v10.scalarMultiply(a).add(1-a, v1);
+                        a2.d = v20.scalarMultiply(a).add(1-a, v2);
+                        a1.collision = true;
+                        a2.collision = true;
+
+                        writeEventHits(a1, a2);
+                    }
+
+                    // Пересечение сверху или снизу!
+                    else if (ax >= ay){
+                        a = ay;
+
+                        // Изменяем скорости
+                        v1 = new Vector2D(0, 0);
+                        v2 = new Vector2D(0, 0);
+
+                        if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+                            v1 = new Vector2D(v10.getX(), v20.getY());
+                            v2 = new Vector2D(v20.getX(), v10.getY());
+                        }
+                        else if(a1.infinityMass && !a2.infinityMass){
+                            v1 = v10;
+                            v2 = new Vector2D(v20.getX(), 2*v10.getY() - v20.getY());
+                        }
+                        else if(!a1.infinityMass && a2.infinityMass){
+                            v1 = new Vector2D(v10.getX(), 2*v20.getY() - v10.getY());
+                            v2 = v20;
+                        }
+                        else{
+                            v1 = new Vector2D(v10.getX(), (v10.getY()*(m1/m2-1) + v20.getY()*2)/(1+m1/m2));
+                            v2 = new Vector2D(v20.getX(), (v20.getY()*(m2/m1-1) + v10.getY()*2)/(1+m2/m1));
+                        }
+                        a1.velocity = v1.scalarMultiply(n*frame);
+                        a2.velocity = v2.scalarMultiply(n*frame);
+
+                        a1.d = v10.scalarMultiply(a).add(1-a, v1);
+                        a2.d = v20.scalarMultiply(a).add(1-a, v2);
+                        a1.collision = true;
+                        a2.collision = true;
+
+                        writeEventHits(a1, a2);
+                    }
+                }
+                else{
+                    a1.d = a1.velocity.scalarMultiply(1/n/frame);
+                    a2.d = a2.velocity.scalarMultiply(1/n/frame);
+                }
+            }
+        }
+    }
+    
+    private void writeEventHits(Object a1, Object a2){
+        EventHit eventHit1 = new EventHit();
+        EventHit eventHit2 = new EventHit();
+        eventHit1.id = a2.id;
+        eventHit2.id = a1.id;
+        eventHit1.typeName = a2.typeName;
+        eventHit2.typeName = a1.typeName;
+        eventHit1.className = a2.className;
+        eventHit2.className = a1.className;
+        a1.eventHit.add(eventHit1);
+        a2.eventHit.add(eventHit2);
+    }
+    
+    private void writeEventHitWithWorld(Object a){
+        EventHit eventHit = new EventHit();
+        eventHit.id = 0;
+        eventHit.typeName = "World";
+        eventHit.className = "World";
+        a.eventHit.add(eventHit);
+    }
     
 }

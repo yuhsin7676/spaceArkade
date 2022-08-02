@@ -18,8 +18,10 @@ public class Global {
     public static int createWorld(){
         World world = new World(800, 600);
         int worldId = Global.primary;
-        Vector2D location = new Vector2D(100, 100);
-        world.createNewObject(new DynamicComponent(location, 1));
+        world.spawnActor(new Vector2D(100, 100), new Vector2D(20, 30));
+        world.spawnActor(new Vector2D(200, 200), new Vector2D(10, -30));
+        world.spawnActor(new Vector2D(300, 300), new Vector2D(-20, -20));
+        world.spawnActor(new Vector2D(400, 400), new Vector2D(-30, 10));
         Global.mapWorld.put(worldId, world);
         Global.primary++;
         return worldId;
