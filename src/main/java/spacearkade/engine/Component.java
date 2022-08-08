@@ -1,4 +1,4 @@
-package spacearkade.game;
+package spacearkade.engine;
 
 import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -60,6 +60,10 @@ public abstract class Component {
     
     public boolean getIsInfinityMass() {
         return infinityMass;
+    }
+    
+    public String getClassName(){
+        return this.className;
     }
 
     // Функции ввода (возвращает данный объект, так как он использует паттерн строитель)

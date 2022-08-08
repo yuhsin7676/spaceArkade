@@ -1,6 +1,6 @@
 package spacearkade.controllers;
 
-import spacearkade.game.World;
+import spacearkade.engine.World;
 import spacearkade.Global;
 
 //import org.springframework.stereotype.Controller;

@@ -1,6 +1,6 @@
 package spacearkade.game;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import spacearkade.engine.StaticComponent;
 
 public class Tile extends StaticComponent{
     
@@ -16,6 +16,9 @@ public class Tile extends StaticComponent{
             this.canBeRemove = true;
     }
     
-    
-    
+    @Override
+    public String getClassName() {
+        return "Tile";
+    }
+      
 }

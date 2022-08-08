@@ -11,8 +11,8 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import spacearkade.game.Player;
-import spacearkade.game.World;
+import spacearkade.engine.Player;
+import spacearkade.engine.World;
 import spacearkade.websocket.WebSocketHandler;
 
 @Component

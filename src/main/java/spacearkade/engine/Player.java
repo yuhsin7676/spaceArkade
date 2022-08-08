@@ -1,4 +1,4 @@
-package spacearkade.game;
+package spacearkade.engine;
 
 public class Player {
     

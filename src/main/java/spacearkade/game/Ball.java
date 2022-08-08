@@ -1,0 +1,28 @@
+package spacearkade.game;
+
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import spacearkade.engine.DynamicComponent;
+
+public class Ball extends DynamicComponent {
+
+    @Override
+    public void eventHitListener() {
+        for(int i = 0; i < this.eventHit.size(); i++)
+            if(this.eventHit.get(i).className.equals("Platform")){
+                Vector2D platformLocation = this.eventHit.get(i).location;
+                Vector2D platformSize = this.eventHit.get(i).size;
+                double vx = 60 * (this.location.getX() - platformLocation.getX())/(platformSize.getX()/2);
+                this.velocity = new Vector2D(vx, this.velocity.getY());
+            }
+
+    }
+     
+    @Override
+    public String getClassName() {
+        return "Ball";
+    }
+    
+      
+}
+
+    

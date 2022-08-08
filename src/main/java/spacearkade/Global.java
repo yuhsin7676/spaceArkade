@@ -1,12 +1,13 @@
 package spacearkade;
 
-import spacearkade.game.World;
+import spacearkade.engine.World;
 
 import java.util.Map;
 import java.util.HashMap;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import spacearkade.game.DynamicComponent;
-import spacearkade.game.Player;
+import spacearkade.engine.DynamicComponent;
+import spacearkade.engine.Player;
+import spacearkade.game.Ball;
+import spacearkade.game.Platform;
 import spacearkade.game.Tile;
 
 public class Global {
@@ -18,9 +19,9 @@ public class Global {
     public static int createWorld(){
         World world = new World(800, 600);
         int worldId = Global.primary;
-        world.addComponent(new DynamicComponent().setLocation(400, 578).setVelocity(40, -40));
-        world.addComponent(new DynamicComponent().setLocation(400, 11).setVelocity(0, 0)).setSize(50, 20).setIsCircle(false).setInfinityMass(true);
-        world.addComponent(new DynamicComponent().setLocation(400, 589).setVelocity(0, 0)).setSize(50, 20).setIsCircle(false).setInfinityMass(true);
+        world.addComponent(new Ball().setLocation(400, 568).setVelocity(40, -40));
+        world.addComponent(new Platform().setLocation(400, 11).setVelocity(0, 0)).setSize(100, 20).setIsCircle(false).setInfinityMass(true);
+        world.addComponent(new Platform().setLocation(400, 589).setVelocity(0, 0)).setSize(100, 20).setIsCircle(false).setInfinityMass(true);
         
         for(int i = 0; i < 16; i++)
             for(int j = 0; j < 17; j++)

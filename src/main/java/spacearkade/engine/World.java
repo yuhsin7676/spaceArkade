@@ -1,4 +1,4 @@
-package spacearkade.game;
+package spacearkade.engine;
 
 import static java.lang.Math.sqrt;
 import static java.lang.Math.abs;
@@ -179,7 +179,7 @@ public class World {
     
     // Коллизии объектов друг с другом
     void relationshipObjects(Component a1, Component a2){
-        if (!a1.collision && (!a2.collision || a2.typeName.equals("Scene")) && a1.enableCollision && a2.enableCollision){
+        if (!a1.collision && (!a2.collision || a2.isStaticComponent) && a1.enableCollision && a2.enableCollision){
 
             // Столкновение 2 окружностей
             if (a1.isCircle && a2.isCircle)
@@ -204,8 +204,14 @@ public class World {
         eventHit2.id = a1.id;
         eventHit1.typeName = a2.typeName;
         eventHit2.typeName = a1.typeName;
-        eventHit1.className = a2.className;
-        eventHit2.className = a1.className;
+        eventHit1.className = a2.getClassName();
+        eventHit2.className = a1.getClassName();
+        eventHit1.velocity = a2.velocity;
+        eventHit2.velocity = a1.velocity;
+        eventHit1.location = a2.location;
+        eventHit2.location = a1.location;
+        eventHit1.size = a2.size;
+        eventHit2.size = a1.size;
         a1.eventHit.add(eventHit1);
         a2.eventHit.add(eventHit2);
         a1.eventHitListener();
@@ -286,7 +292,7 @@ public class World {
         Vector2D v1 = new Vector2D(0, 0);
         Vector2D v2 = new Vector2D(0, 0);
 
-        if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+        if(a1.infinityMass && a2.infinityMass && !a2.isStaticComponent){
             v1 = new Vector2D(v20.getX(), v10.getY());
             v2 = new Vector2D(v10.getX(), v20.getY());
         }
@@ -318,7 +324,7 @@ public class World {
         Vector2D v1 = new Vector2D(0, 0);
         Vector2D v2 = new Vector2D(0, 0);
 
-        if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+        if(a1.infinityMass && a2.infinityMass && !a2.isStaticComponent){
             v1 = new Vector2D(v10.getX(), v20.getY());
             v2 = new Vector2D(v20.getX(), v10.getY());
         }
@@ -481,7 +487,7 @@ public class World {
             }
 
             // Изменяем скорости
-            if(a1.infinityMass && a2.infinityMass && a2.typeName.equals("Actor")){
+            if(a1.infinityMass && a2.infinityMass && !a2.isStaticComponent){
                 v1 = vn2.add(vt1);
                 v2 = vn1.add(vt2);
             }
