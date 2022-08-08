@@ -1,13 +1,13 @@
 package spacearkade;
 
 import spacearkade.game.World;
-import spacearkade.game.StaticComponent;
-import spacearkade.game.DynamicComponent;
 
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import spacearkade.game.DynamicComponent;
 import spacearkade.game.Player;
+import spacearkade.game.Tile;
 
 public class Global {
     
@@ -18,10 +18,14 @@ public class Global {
     public static int createWorld(){
         World world = new World(800, 600);
         int worldId = Global.primary;
-        world.spawnActor(new Vector2D(100, 100), new Vector2D(20, 30));
-        world.spawnActor(new Vector2D(200, 200), new Vector2D(10, -30));
-        world.spawnActor(new Vector2D(300, 300), new Vector2D(-20, -20));
-        world.spawnActor(new Vector2D(400, 400), new Vector2D(-30, 10));
+        world.addComponent(new DynamicComponent().setLocation(400, 578).setVelocity(40, -40));
+        world.addComponent(new DynamicComponent().setLocation(400, 11).setVelocity(0, 0)).setSize(50, 20).setIsCircle(false).setInfinityMass(true);
+        world.addComponent(new DynamicComponent().setLocation(400, 589).setVelocity(0, 0)).setSize(50, 20).setIsCircle(false).setInfinityMass(true);
+        
+        for(int i = 0; i < 16; i++)
+            for(int j = 0; j < 17; j++)
+                world.addComponent(new Tile().setLocation(25 + i*50, 120 + j*20).setSize(49, 19).setIsCircle(false));
+        
         Global.mapWorld.put(worldId, world);
         Global.primary++;
         return worldId;

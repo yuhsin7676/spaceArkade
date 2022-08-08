@@ -12,12 +12,24 @@ var ctx = canvas.getContext('2d');
 
 var socket = new WebSocket("ws://localhost:8888/websocket");
 
+var velocityX = 0;
+
 document.addEventListener('keydown', function(event) {
-    console.log("z has been pressed");
+    if(event.code === "KeyA")
+        velocityX = -100;
+    else if(event.code === "KeyD")
+        velocityX = 100;
+});
+
+document.addEventListener('keyup', function(event) {
+    if(event.code === "KeyA")
+        velocityX = 0;
+    else if(event.code === "KeyD")
+        velocityX = 0;
 });
 
 socket.onopen = function(e) {
-    socket.send("222");
+    socket.send(JSON.stringify({x: velocityX, y: 0}));
 };
 
 socket.onmessage = function(event) {
@@ -25,21 +37,19 @@ socket.onmessage = function(event) {
         var data = JSON.parse(event.data);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for(var key in data.dynamicComponents){
-            var obj = data.dynamicComponents[key]; 
+        for(var key in data.components){
+            var obj = data.components[key]; 
             if(obj.isCircle){
                 ctx.beginPath();
                 ctx.arc(obj.location.x, obj.location.y, obj.r, 0, Math.PI*2, true);
                 ctx.stroke();
             }
             else
-                ctx.fillRect(obj.location.x, obj.location.y, obj.size.x, obj.size.y);
+                ctx.fillRect(obj.location.x - obj.size.x/2, obj.location.y - obj.size.y/2, obj.size.x, obj.size.y);
         }
         
-        
-        
     }
-    socket.send("222");
+    socket.send(JSON.stringify({x: velocityX, y: 0}));
 };
 
 socket.onclose = function(event) {
