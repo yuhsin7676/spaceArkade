@@ -12,24 +12,26 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 public class World {
     
     // Переменные
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
+    public final int id;
     private int primary = 0;
-    public boolean player1 = false;
-    public boolean player2 = false;
     public Map<Integer, Component> components = new HashMap<Integer, Component>();
-    public double n = 1; // Точность расчета коллизий
-    public int frame = 60; // Учет количества кадров
+    protected double n = 1; // Точность расчета коллизий
+    protected int frame = 60; // Учет количества кадров
 
     // Конструктор
-    public World(int width, int height) {
+    public World(int id, int width, int height) {
+        this.id = id;
         this.width = width;
         this.height = height;
     }
     
-    ////////////////// Функции /////////////////////////
+    ////////////////// Методы /////////////////////////
 
-    //
+    /**
+     * Добавляет Component в мир. Возвращает ссылку на него.
+     */
     public Component addComponent(Component component){
         
         component.id = this.primary;
@@ -39,44 +41,23 @@ public class World {
         
     }
 
-    //
-    public int deleteComponent(int id){
+    /**
+     * Удаляет Component с выбранным id из мира.
+     * @param id - id удаляемого Component
+     */
+    public void deleteComponent(int id){
         components.remove(id);
-        return primary;
     }
     
-    // Удаление всех объектов в мире
+    /**
+     * Удаляет все объекты Component в мире.
+     */
     public void clearWorld(){
         components.clear();
     };
     
-    //
-    public int addPlayer(Player player){
-        if(this.player1 == false){
-            player.playerNumber = 1;
-            player.object = this.components.get(1);
-            this.player1 = true;
-            return 1;
-        }
-        else if(this.player2 == false){
-            player.playerNumber = 2;
-            player.object = this.components.get(2);
-            this.player2 = true;
-            return 2;
-        }
-        else{
-            return 0;
-        }
-    }
-    
-    //
-    public void removePlayer1(){
-        player1 = false;
-    }
-    
-    //
-    public void removePlayer2(){
-        player2 = false;
+    public void update(){
+        calculateLocationsVelocities();
     }
     
     /////////////////////////////////////////
@@ -86,8 +67,10 @@ public class World {
     /////////////////////////////////////////
     
     
-    // Пересчет координат всех объектов и проверка событий мыши
-    public void update(){
+    /**
+     * Пересчитывает координаты и скорости всех Component.
+     */
+    private final void calculateLocationsVelocities(){
 
         // Обнуление eventHit
         for(Map.Entry<Integer, Component> entry : components.entrySet())
@@ -97,14 +80,19 @@ public class World {
         for(int k = 0; k < n; k++){
             for(Map.Entry<Integer, Component> component : components.entrySet()){
                 
+                // Пересчитаем координаты для нестатических компонентов
                 if(!component.getValue().isStaticComponent){
-                    relationshipWorld(component.getValue());
-                    for(Map.Entry<Integer, Component> component2 : components.entrySet()){
-                        if(component2.getValue().isStaticComponent)
+                    
+                    // Если мир имеет положительные размеры, рассмотрим взаимодействие компонента с его краем
+                    if(this.width > 0 && this.height > 0)
+                        relationshipWorld(component.getValue());
+                    
+                    // Рассмотрим взаимодействие компонента с другими компонентами
+                    for(Map.Entry<Integer, Component> component2 : components.entrySet())
+                        if(component2.getValue().isStaticComponent || !component.getValue().collision && !component.getValue().equals(component2.getValue()))
                             relationshipObjects(component.getValue(), component2.getValue());
-                        else if(!component.getValue().collision && !component.getValue().equals(component2.getValue()))
-                            relationshipObjects(component.getValue(), component2.getValue());
-                    }
+                        
+                    // Изменим местоположение компонента после всех взаимодействий
                     component.getValue().location = component.getValue().location.add(component.getValue().d);
                 }
                 
@@ -120,11 +108,15 @@ public class World {
         while(i.hasNext())
             if(i.next().getValue().canBeRemove)
                 i.remove();
+        
+        // вызовем update() у компонентов
+        for(Map.Entry<Integer, Component> entry : components.entrySet())
+            entry.getValue().update();
 
     }    
     
-    //
-    void relationshipWorld(Component dynamicCombonent){
+    // Проверка коллизий объекта с миром
+    private void relationshipWorld(Component dynamicCombonent){
 			
         double cx = dynamicCombonent.location.getX();
         double cy = dynamicCombonent.location.getY();
@@ -177,8 +169,8 @@ public class World {
         
     }
     
-    // Коллизии объектов друг с другом
-    void relationshipObjects(Component a1, Component a2){
+    // Проверка коллизий объектов друг с другом
+    private void relationshipObjects(Component a1, Component a2){
         if (!a1.collision && (!a2.collision || a2.isStaticComponent) && a1.enableCollision && a2.enableCollision){
 
             // Столкновение 2 окружностей
@@ -224,6 +216,7 @@ public class World {
         eventHit.typeName = "World";
         eventHit.className = "World";
         a.eventHit.add(eventHit);
+        a.eventHitListener();
     }
     
     private void changeVelocityAndCalcD(Component a1, Component a2, Vector2D v1, Vector2D v2, double part){
@@ -239,7 +232,7 @@ public class World {
         a2.collision = true;
     }
     
-    private double[] howAxisIntersection(Component a1, Component a2){
+    private Vector2D howAxisIntersection(Component a1, Component a2){
     
         Vector2D location10 = a1.location;
         Vector2D location20 = a2.location; 
@@ -277,7 +270,7 @@ public class World {
         if (!((c2x.getY() + h2/2 >= c1x.getY() - h1/2) && (c2x.getY() - h2/2 <= c1x.getY() + h1/2))) partX = 2;
         if (!((c2y.getX() + w2/2 >= c1y.getX() - w1/2) && (c2y.getX() - w2/2 <= c1y.getX() + w1/2))) partY = 2;
         
-        double[] parts = {partX, partY};
+        Vector2D parts = new Vector2D(partX, partY);
         return parts;
         
     }
@@ -348,9 +341,9 @@ public class World {
     
     private void squaresOrSquareCircleRelationHelp(Component a1, Component a2){
         
-        double[] parts = howAxisIntersection(a1, a2);
-        double partX = parts[0];
-        double partY = parts[1];
+        Vector2D parts = howAxisIntersection(a1, a2);
+        double partX = parts.getX();
+        double partY = parts.getY();
         double part;
 
         Vector2D[] newVelocities;

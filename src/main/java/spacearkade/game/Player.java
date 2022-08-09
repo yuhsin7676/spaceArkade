@@ -1,13 +1,12 @@
-package spacearkade.engine;
+package spacearkade.game;
+
+import spacearkade.engine.Component;
 
 public class Player {
     
-    public World worldPointer;
+    public ArkadeWorld worldPointer;
     public int worldNumber;
     public int playerNumber;
     public Component object;
-    
-    public void removeFromWorld(){
-    }
     
 }

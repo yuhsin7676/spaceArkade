@@ -4,7 +4,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class EventHit {
     
-    // Структура данных о соударении
+    // Структура данных о соударении. Меня она бесит!
     public int id;
     public String typeName;
     public String className;

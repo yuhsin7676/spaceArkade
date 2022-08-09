@@ -1,18 +1,18 @@
 package spacearkade;
 
+import spacearkade.game.Global;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import spacearkade.engine.Player;
-import spacearkade.engine.World;
+import spacearkade.game.Player;
+import spacearkade.game.ArkadeWorld;
 import spacearkade.websocket.WebSocketHandler;
 
 @Component
@@ -27,40 +27,56 @@ public class GameLoop extends ApplicationAdapter{
     @Override
     public void create() {
         socketHandler.setConnectListener(session -> {
-            Global.addPlayerToWorld(session.getId());
-            //events.add("Player add to world: " + player.worldNumber + ", and get number: " + player.playerNumber);
+            Global.createPlayer(session.getId());
         });
         socketHandler.setDisconnectListener(session -> {
             Global.removePlayer(session.getId());
-            //events.add(session.getId() + " just disconnect");
         });
         socketHandler.setMessageListener(((session, message) -> {
-            Type type = new TypeToken<Vector2D>(){}.getType();
-            Vector2D velocity = new Gson().fromJson(message, type);
-            
             Player player = Global.mapPlayer.get(session.getId());
-            player.object.setVelocity(velocity);
-            //events.add(session.getId() + " said " + message);
+            
+            if(player.worldPointer != null){
+                Type type = new TypeToken<Vector2D>(){}.getType();
+                Vector2D velocity = new Gson().fromJson(message, type);
+
+                player.object.setVelocity(velocity);
+            }
+            else{
+                switch(message){
+                    case "play":
+                        Global.addPlayerToWorld(session.getId());
+                        break;
+                }
+            }
+            
         }));
     }
 
     @Override
     public void render() {
+        //System.out.println(Global.mapWorld.size());
         for (WebSocketSession session : socketHandler.getSessions()){
             try{
                 Player player = Global.mapPlayer.get(session.getId());
-                World world = player.worldPointer;
+                ArkadeWorld world = player.worldPointer;
                 if(world != null){
+                    //System.out.println("1");
                     if(world.player1 == true && world.player2 == true){
                         world.update();
                         String json = new Gson().toJson(world);
                         session.sendMessage(new TextMessage(json));
                     }
-                    else
-                        session.sendMessage(new TextMessage("no"));
+                    else if(world.player1 == false && world.player2 == false){
+                        Global.removePlayerFromWorld(String.valueOf(session.getId()));
+                        session.sendMessage(new TextMessage("lose"));
+                    }
+                    else{
+                        session.sendMessage(new TextMessage("wait"));
+                    }
                 }
-                //for(String event : events)
-                    //session.sendMessage(new TextMessage(event));
+                else{
+                    session.sendMessage(new TextMessage("lose"));
+                }
             }
             catch(IOException e){
                 e.printStackTrace();

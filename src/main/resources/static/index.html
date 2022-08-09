@@ -2,6 +2,8 @@
 <body>
     
     <canvas id="canvas" width="800" height="600" style="border: 1px #000 solid;"></canvas>
+    <button id="playButton" onclick="socket.send('play')">Играть</button>
+    <div id="messages"></div>
     
 </body>
 </html>
@@ -9,31 +11,33 @@
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d');
-
-var socket = new WebSocket("ws://localhost:8888/websocket");
-
+var toLeft = 0;
+var toRight = 0;
 var velocityX = 0;
+var begin = true;
 
 document.addEventListener('keydown', function(event) {
     if(event.code === "KeyA")
-        velocityX = -100;
+        toLeft = -1;
     else if(event.code === "KeyD")
-        velocityX = 100;
+        toRight = 1;
 });
 
 document.addEventListener('keyup', function(event) {
     if(event.code === "KeyA")
-        velocityX = 0;
+        toLeft = 0;
     else if(event.code === "KeyD")
-        velocityX = 0;
+        toRight = 0;
 });
 
-socket.onopen = function(e) {
-    socket.send(JSON.stringify({x: velocityX, y: 0}));
-};
+//////////////// Работа с сокетом //////////////////
+
+var socket = new WebSocket("ws://localhost:8888/websocket");
 
 socket.onmessage = function(event) {
-    if(event.data != "no"){
+    if(event.data !== "wait" && event.data !== "lose"){
+        begin = false;
+        document.getElementById("messages").innerHTML = "";
         var data = JSON.parse(event.data);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -48,8 +52,17 @@ socket.onmessage = function(event) {
                 ctx.fillRect(obj.location.x - obj.size.x/2, obj.location.y - obj.size.y/2, obj.size.x, obj.size.y);
         }
         
+        velocityX = 200 * (toLeft + toRight);
+        socket.send(JSON.stringify({x: velocityX, y: 0}));
     }
-    socket.send(JSON.stringify({x: velocityX, y: 0}));
+    else if(event.data === "lose"){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(!begin)
+            document.getElementById("messages").innerHTML = "Вы проиграли!";
+    }
+    else if(event.data === "wait"){
+        document.getElementById("messages").innerHTML = "Ждем второго игрока!";
+    }
 };
 
 socket.onclose = function(event) {
