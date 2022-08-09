@@ -15,7 +15,7 @@ public class Ball extends DynamicComponent {
                 this.velocity = new Vector2D(vx, this.velocity.getY());
             }
             else if(this.eventHit.get(i).className.equals("World")){
-                if(this.location.getY() <= this.r || this.location.getY() >= 599 - this.r)
+                if(this.location.getY() <= 3 + this.r || this.location.getY() >= 597 - this.r)
                     this.removed();
             }
         }

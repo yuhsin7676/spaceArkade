@@ -8,8 +8,9 @@ import spacearkade.engine.World;
 
 public class ArkadeWorld extends World{
     
-    public boolean player1 = false;
-    public boolean player2 = false;
+    private boolean player1 = false;
+    private boolean player2 = false;
+    protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
     public Map<Integer, Component> balls = new HashMap<Integer, Component>();
     
     // Конструктор
@@ -27,7 +28,9 @@ public class ArkadeWorld extends World{
 
     @Override
     public void update() {
-        super.update();
+        // Выполним обновление мира если оба игрока присутствуют
+        if(player1 && player2)
+            super.update();
         
         // Удаляем через явный итератор, иначе будет ошибка ConcurrentModificationException
         Iterator<Map.Entry<Integer, Component>> i = balls.entrySet().iterator();
@@ -35,13 +38,13 @@ public class ArkadeWorld extends World{
             if(!components.containsKey(i.next().getKey()))
                 i.remove();
         
+        // Если шаров не осталось, удаляем игроков из мира, так как они проиграли
         if(balls.isEmpty()){
             removePlayer1();
             removePlayer2();
         }
+        
     }
-    
-    
     
     /**
      * Добавляет игрока Player в мир. Возвращает номер игрока в данном мире или 0, если места для игрока нет.
@@ -69,6 +72,8 @@ public class ArkadeWorld extends World{
      */
     public void removePlayer1(){
         player1 = false;
+        if(!player2)
+            this.canBeRemove = true;
     }
     
     /**
@@ -76,6 +81,22 @@ public class ArkadeWorld extends World{
      */
     public void removePlayer2(){
         player2 = false;
+        if(!player1)
+            this.canBeRemove = true;
+    }
+    
+    /**
+     * Проверяет, все ли игроки есть в мире.
+     */
+    public boolean haveAllPlayers(){
+        return (player1 && player2);
+    }
+    
+    /**
+     * Проверяет, есть ли хотя бы один игрок в мире.
+     */
+    public boolean havePlayers(){
+        return (player1 || player2);
     }
     
 }

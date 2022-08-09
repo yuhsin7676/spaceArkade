@@ -6,7 +6,7 @@ public class Tile extends StaticComponent{
     
     public int health = 1;
     
-    public Tile() {
+    public Tile(){
     }
 
     @Override

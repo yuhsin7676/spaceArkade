@@ -56,6 +56,9 @@ public class World {
         components.clear();
     };
     
+    /**
+     * Выполняет действия каждый кадр.
+     */
     public void update(){
         calculateLocationsVelocities();
     }
@@ -65,7 +68,6 @@ public class World {
     // Ниже идет физика
     //
     /////////////////////////////////////////
-    
     
     /**
      * Пересчитывает координаты и скорости всех Component.

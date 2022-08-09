@@ -35,12 +35,20 @@ public class GameLoop extends ApplicationAdapter{
         socketHandler.setMessageListener(((session, message) -> {
             Player player = Global.mapPlayer.get(session.getId());
             
+            // Если игрок находится в мире
             if(player.worldPointer != null){
-                Type type = new TypeToken<Vector2D>(){}.getType();
-                Vector2D velocity = new Gson().fromJson(message, type);
+                try{
+                    Type type = new TypeToken<Vector2D>(){}.getType();
+                    Vector2D velocity = new Gson().fromJson(message, type);
 
-                player.object.setVelocity(velocity);
+                    player.object.setVelocity(velocity);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
             }
+            
+            // Иначе ждем команду play от клиента
             else{
                 switch(message){
                     case "play":
@@ -54,28 +62,35 @@ public class GameLoop extends ApplicationAdapter{
 
     @Override
     public void render() {
-        //System.out.println(Global.mapWorld.size());
+        Global.update();
         for (WebSocketSession session : socketHandler.getSessions()){
             try{
                 Player player = Global.mapPlayer.get(session.getId());
-                ArkadeWorld world = player.worldPointer;
-                if(world != null){
-                    //System.out.println("1");
-                    if(world.player1 == true && world.player2 == true){
-                        world.update();
-                        String json = new Gson().toJson(world);
-                        session.sendMessage(new TextMessage(json));
-                    }
-                    else if(world.player1 == false && world.player2 == false){
-                        Global.removePlayerFromWorld(String.valueOf(session.getId()));
-                        session.sendMessage(new TextMessage("lose"));
+                if(player != null){
+                    
+                    ArkadeWorld world = player.worldPointer;
+                    if(world != null){
+
+                        // Если в мире есть оба игрока, значит игра идет, отошлем клиенту состояние мира
+                        if(world.haveAllPlayers()){
+                            String json = new Gson().toJson(player);
+                            session.sendMessage(new TextMessage(json));
+                        }
+
+                        // Если в мире нет ни одного игрока, значит игрок вне игры. Удалим ссылку на этот мир у игрока
+                        else if(!world.havePlayers()){
+                            Global.removePlayerFromWorld(session.getId());
+                            session.sendMessage(new TextMessage("noPlay"));
+                        }
+
+                        // Иначе игрок ожидает другого игрока
+                        else
+                            session.sendMessage(new TextMessage("wait"));
+
                     }
                     else{
-                        session.sendMessage(new TextMessage("wait"));
+                        session.sendMessage(new TextMessage("noPlay"));
                     }
-                }
-                else{
-                    session.sendMessage(new TextMessage("lose"));
                 }
             }
             catch(IOException e){

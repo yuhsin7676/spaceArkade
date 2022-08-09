@@ -15,22 +15,11 @@ public abstract class Component {
     protected Vector2D location = new Vector2D(0, 0);
     protected Vector2D velocity = new Vector2D(0., 0.);
     protected boolean isCircle = true;// eсли false, то объект - прямоугольный
-    
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
     protected boolean isStaticComponent = false;
-    
-    /* Переменные, используемые в рассчете соударений
-     * Переменная collision обозначает, было ли проверено соударение актора с другим объектом
-     * Рассчет коллизий данного актора идет ровно до первого обнаружения коллизии, после чего
-     * переменная collision становится true, а акторы с таким значением collision не участвуют
-     * в обнаружении коллизий. Для статических компонентов мира не используется, так как они участвуют во
-     * всех обнаружениях коллизий динамических компонентов.
-     */
     protected boolean collision = false;
     protected boolean enableCollision = true;
     protected boolean infinityMass = false;
-
-    // Массив данных соударения
     protected ArrayList<EventHit> eventHit;
     
     //////////////////////// Методы ////////////////////////
