@@ -35,7 +35,7 @@ public class GameLoop extends ApplicationAdapter{
         socketHandler.setMessageListener(((session, message) -> {
             Player player = Global.mapPlayer.get(session.getId());
             
-            // Если игрок находится в мире
+            // Если игрок находится в мире, то изменяем его скорость
             if(player.worldPointer != null){
                 try{
                     Type type = new TypeToken<Vector2D>(){}.getType();
