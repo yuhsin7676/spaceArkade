@@ -74,7 +74,8 @@ var graphic = new Graphic();
 
 //////////////// Работа с сокетом //////////////////
 
-var socket = new WebSocket("ws://localhost:8888/websocket");
+// Сюда надо написать ip-адрес
+var socket = new WebSocket("ws://192.168.1.12:8888/websocket");
 
 socket.onmessage = function(event) {
     if(event.data !== "wait" && event.data !== "noPlay"){       
@@ -104,7 +105,7 @@ socket.onmessage = function(event) {
 };
 
 socket.onclose = function(event) {
-    console.log("Соединение сброшено!");
+    console.log("[close] Соединение закрыто чисто, код=" + event.code + " причина=" + event.reason);
 };
 
 socket.onerror = function(error) {
