@@ -21,10 +21,15 @@ class Graphic{
             
             if(obj.isCircle){
                 this.ctx.beginPath();
+                this.ctx.fillStyle = "#000";
                 this.ctx.arc(locationX, locationY, obj.r, 0, Math.PI*2, true);
                 this.ctx.stroke();
             }
             else{
+                if(obj.className == "Tile1") this.ctx.fillStyle = "#080";
+                else if(obj.className == "Tile2") this.ctx.fillStyle = "#cc0";
+                else if(obj.className == "Tile3") this.ctx.fillStyle = "#f80";
+                
                 this.ctx.fillRect(locationX - obj.size.x/2, locationY - obj.size.y/2, obj.size.x, obj.size.y);
             }
         }
@@ -100,7 +105,9 @@ socket.onmessage = function(event) {
             var data = JSON.parse(event.data);
             if(data.playerNumber == 1)
                 graphic.turnOver = inputs.turnOver = true;
-
+            else
+                graphic.turnOver = inputs.turnOver = false;
+            
             graphic.update(data);
             inputs.update();
             socket.send(JSON.stringify({x: inputs.velocityX, y: 0})); 

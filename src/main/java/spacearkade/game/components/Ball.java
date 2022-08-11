@@ -1,4 +1,4 @@
-package spacearkade.game;
+package spacearkade.game.components;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import spacearkade.engine.DynamicComponent;

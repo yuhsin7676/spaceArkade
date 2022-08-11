@@ -1,5 +1,7 @@
 package spacearkade.game;
 
+import spacearkade.game.components.Ball;
+import spacearkade.game.components.Tile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,9 +25,9 @@ public class ArkadeWorld extends World{
     @Override
     public Component addComponent(Component component) {
         component = super.addComponent(component);
-        if (component.getClass().equals(Ball.class))
+        if (component instanceof Ball)
             balls.put(component.getId(), component);
-        else if (component.getClass().equals(Tile.class))
+        else if (component instanceof Tile)// Используем instanseof, так как он возвращает try для наследников Tile 
             tiles.put(component.getId(), component);
         return component;
     }

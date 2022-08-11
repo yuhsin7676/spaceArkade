@@ -1,4 +1,4 @@
-package spacearkade.game;
+package spacearkade.game.components;
 
 import spacearkade.engine.StaticComponent;
 
