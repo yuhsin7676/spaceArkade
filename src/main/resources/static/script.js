@@ -21,11 +21,12 @@ class Graphic{
             
             if(obj.isCircle){
                 this.ctx.beginPath();
-                if(obj.className == "Ball") this.ctx.fillStyle = "#000";
+                if(obj.className == "Ball") this.ctx.fillStyle = "#fff";
                 else if(obj.className == "Bonus") this.ctx.fillStyle = "#f00";
                 
                 this.ctx.arc(locationX, locationY, obj.r, 0, Math.PI*2, true);
                 this.ctx.stroke();
+                this.ctx.fill();
             }
             else{
                 if(obj.className == "Tile1") this.ctx.fillStyle = "#080";
@@ -79,6 +80,7 @@ class Inputs{
 var inputs = new Inputs();
 var graphic = new Graphic();
 var messages = document.getElementById("messages");
+var playButton = document.getElementById("playButton");
 
 //////////////// Работа с сокетом //////////////////
 
@@ -87,10 +89,12 @@ var socket = new WebSocket("ws://localhost:8888/websocket");
 
 socket.onmessage = function(event) {
     messages.innerHTML = "";
+    playButton.disabled = true;
     
     switch(event.data){
         case "NOPLAY":
             graphic.clear();
+            playButton.disabled = false;
             break;
         case "WAIT":
             graphic.clear();
@@ -98,10 +102,12 @@ socket.onmessage = function(event) {
             break;
         case "LOSE":
             graphic.clear();
+            playButton.disabled = false;
             messages.innerHTML = "Вы проиграли!";
             break;
         case "WIN":
             graphic.clear();
+            playButton.disabled = false;
             messages.innerHTML = "Вы выиграли!";
             break;
         default:

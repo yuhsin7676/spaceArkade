@@ -5,6 +5,10 @@ import spacearkade.engine.DynamicComponent;
 
 public class Ball extends DynamicComponent {
 
+    public Ball() {
+        this.className = "Ball";
+    }    
+    
     @Override
     public void eventHitListener() {
         for(int i = 0; i < this.eventHit.size(); i++){

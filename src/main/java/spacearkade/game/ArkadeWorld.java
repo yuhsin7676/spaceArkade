@@ -77,7 +77,7 @@ public class ArkadeWorld extends World{
             if(!components.containsKey(i.next().getKey()))
                 i.remove();
         
-        //
+        // Смотрим, есть ли пересечения между платформой и бонусом
         for(Map.Entry<Integer, Component> bonus : bonuses.entrySet()){
             for(Map.Entry<Integer, Component> platform : platforms.entrySet()){
                 Vector2D bonusLocation = bonus.getValue().getLocation();
