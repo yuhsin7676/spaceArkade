@@ -8,10 +8,12 @@ import spacearkade.engine.World;
 
 public class ArkadeWorld extends World{
     
-    private boolean player1 = false;
-    private boolean player2 = false;
+    public Player player1 = null;
+    public Player player2 = null;
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
+    public enumStatus status = enumStatus.WAIT;
     public Map<Integer, Component> balls = new HashMap<Integer, Component>();
+    public Map<Integer, Component> tiles = new HashMap<Integer, Component>();
     
     // Конструктор
     public ArkadeWorld(int id, int width, int height) {
@@ -21,15 +23,17 @@ public class ArkadeWorld extends World{
     @Override
     public Component addComponent(Component component) {
         component = super.addComponent(component);
-        if (component.getClassName().equals("Ball"))
+        if (component.getClass().equals(Ball.class))
             balls.put(component.getId(), component);
+        else if (component.getClass().equals(Tile.class))
+            tiles.put(component.getId(), component);
         return component;
     }
 
     @Override
     public void update() {
         // Выполним обновление мира если оба игрока присутствуют
-        if(player1 && player2)
+        if(status == enumStatus.PLAY)
             super.update();
         
         // Удаляем через явный итератор, иначе будет ошибка ConcurrentModificationException
@@ -40,6 +44,14 @@ public class ArkadeWorld extends World{
         
         // Если шаров не осталось, удаляем игроков из мира, так как они проиграли
         if(balls.isEmpty()){
+            this.status = enumStatus.LOSE;
+            removePlayer1();
+            removePlayer2();
+        }
+        
+        // Если плиток не осталось, удаляем игроков из мира, так как они выиграли
+        if(tiles.isEmpty()){
+            this.status = enumStatus.WIN;
             removePlayer1();
             removePlayer2();
         }
@@ -50,16 +62,22 @@ public class ArkadeWorld extends World{
      * Добавляет игрока Player в мир. Возвращает номер игрока в данном мире или 0, если места для игрока нет.
      */
     public int addPlayer(Player player){
-        if(this.player1 == false){
+        if(this.player1 == null){
             player.playerNumber = 1;
             player.object = this.components.get(1);
-            this.player1 = true;
+            this.player1 = player;
+            if(this.player2 != null)
+                this.status = enumStatus.PLAY;
+            player.status = this.status;
             return 1;
         }
-        else if(this.player2 == false){
+        else if(this.player2 == null){
             player.playerNumber = 2;
             player.object = this.components.get(2);
-            this.player2 = true;
+            this.player2 = player;
+            if(this.player1 != null) 
+                this.status = enumStatus.PLAY;
+            player.status = this.status;
             return 2;
         }
         else{
@@ -71,8 +89,15 @@ public class ArkadeWorld extends World{
      * Удаляет первого игрока из мира.
      */
     public void removePlayer1(){
-        player1 = false;
-        if(!player2)
+        this.player1.worldPointer = null;
+        if(this.status == enumStatus.PLAY || this.status == enumStatus.WAIT){
+            this.player1.status = enumStatus.NOPLAY;
+            this.status = enumStatus.WAIT;
+        }
+        else
+            this.player1.status = this.status;
+        this.player1 = null;
+        if(this.player2 == null)
             this.canBeRemove = true;
     }
     
@@ -80,8 +105,15 @@ public class ArkadeWorld extends World{
      * Удаляет второго игрока из мира.
      */
     public void removePlayer2(){
-        player2 = false;
-        if(!player1)
+        this.player2.worldPointer = null;
+        if(this.status == enumStatus.PLAY || this.status == enumStatus.WAIT){
+            this.player2.status = enumStatus.NOPLAY;
+            this.status = enumStatus.WAIT;
+        }
+        else
+            this.player2.status = this.status;
+        this.player2 = null;
+        if(this.player1 == null)
             this.canBeRemove = true;
     }
     
@@ -89,14 +121,14 @@ public class ArkadeWorld extends World{
      * Проверяет, все ли игроки есть в мире.
      */
     public boolean haveAllPlayers(){
-        return (player1 && player2);
+        return (player1 != null && player2 != null);
     }
     
     /**
      * Проверяет, есть ли хотя бы один игрок в мире.
      */
     public boolean havePlayers(){
-        return (player1 || player2);
+        return (player1 != null || player2 != null);
     }
     
 }

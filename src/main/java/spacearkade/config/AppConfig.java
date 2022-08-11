@@ -3,7 +3,7 @@ package spacearkade.config;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import spacearkade.GameLoop;
+import spacearkade.game.GameLoop;
 
 @Configuration
 public class AppConfig {

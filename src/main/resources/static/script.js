@@ -68,47 +68,49 @@ class Inputs{
     
 }
 
-var begin = true;
 var inputs = new Inputs();
 var graphic = new Graphic();
+var messages = document.getElementById("messages");
 
 //////////////// Работа с сокетом //////////////////
 
 // Сюда надо написать ip-адрес
-var socket = new WebSocket("ws://192.168.1.12:8888/websocket");
+var socket = new WebSocket("ws://localhost:8888/websocket");
 
 socket.onmessage = function(event) {
-    if(event.data !== "wait" && event.data !== "noPlay"){       
-        
-        begin = false;
-        document.getElementById("messages").innerHTML = "";
-        
-        var data = JSON.parse(event.data);
-        if(data.playerNumber == 1)
-            graphic.turnOver = inputs.turnOver = true;
-        
-        graphic.update(data);
-        inputs.update();
-        socket.send(JSON.stringify({x: inputs.velocityX, y: 0}));
-        
-    }
-    else if(event.data === "noPlay"){
-        
-        graphic.clear();
-        if(!begin)
-            document.getElementById("messages").innerHTML = "Вы проиграли!";
-        
-    }
-    else if(event.data === "wait"){
-        document.getElementById("messages").innerHTML = "Ждем второго игрока!";
+    messages.innerHTML = "";
+    
+    switch(event.data){
+        case "NOPLAY":
+            graphic.clear();
+            break;
+        case "WAIT":
+            graphic.clear();
+            messages.innerHTML = "Ждем второго игрока!";
+            break;
+        case "LOSE":
+            graphic.clear();
+            messages.innerHTML = "Вы проиграли!";
+            break;
+        case "WIN":
+            graphic.clear();
+            messages.innerHTML = "Вы выиграли!";
+            break;
+        default:
+            var data = JSON.parse(event.data);
+            if(data.playerNumber == 1)
+                graphic.turnOver = inputs.turnOver = true;
+
+            graphic.update(data);
+            inputs.update();
+            socket.send(JSON.stringify({x: inputs.velocityX, y: 0})); 
     }
 };
 
 socket.onclose = function(event) {
-    console.log("[close] Соединение закрыто чисто, код=" + event.code + " причина=" + event.reason);
+    console.log("[close] Соединение закрыто чисто, код: " + event.code + "; причина:" + event.reason);
 };
 
 socket.onerror = function(error) {
-    console.log(`[error] ${error.message}`);
+    console.error(error.message);
 };
-

@@ -51,9 +51,8 @@ public class Global {
                 world.removePlayer1();
             else if(player.playerNumber == 2)
                 world.removePlayer2();
-            player.worldPointer = null;
             if(!world.havePlayers())
-                Global.mapWorld.remove(world.id);
+                Global.mapWorld.remove(world.id);// Возможно, можно удалить
         }
         
     }

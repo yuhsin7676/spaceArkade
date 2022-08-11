@@ -7,6 +7,7 @@ public class Tile extends StaticComponent{
     public int health = 1;
     
     public Tile(){
+        this.className = "Tile";
     }
 
     @Override
@@ -18,7 +19,7 @@ public class Tile extends StaticComponent{
     
     @Override
     public String getClassName() {
-        return "Tile";
+        return this.className;
     }
       
 }

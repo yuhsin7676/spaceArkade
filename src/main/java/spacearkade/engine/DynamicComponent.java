@@ -6,7 +6,6 @@ public class DynamicComponent extends Component{
         super();
         this.isStaticComponent = false;
         this.className = "DynamicComponent";
-        this.typeName = "DynamicComponent";
     }
     
 }

@@ -7,7 +7,6 @@ public class StaticComponent extends Component{
         this.isStaticComponent = true;
         this.infinityMass = true;
         this.className = "StaticComponent";
-        this.typeName = "StaticComponent";
     }
     
 }

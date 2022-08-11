@@ -1,4 +1,4 @@
-package spacearkade;
+package spacearkade.game;
 
 import spacearkade.game.Global;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -13,6 +13,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import spacearkade.game.Player;
 import spacearkade.game.ArkadeWorld;
+import spacearkade.gsonbuilders.PlayerGsonBuilder;
 import spacearkade.websocket.WebSocketHandler;
 
 @Component
@@ -67,31 +68,18 @@ public class GameLoop extends ApplicationAdapter{
             try{
                 Player player = Global.mapPlayer.get(session.getId());
                 if(player != null){
-                    
                     ArkadeWorld world = player.worldPointer;
-                    if(world != null){
-
-                        // Если в мире есть оба игрока, значит игра идет, отошлем клиенту состояние мира
-                        if(world.haveAllPlayers()){
-                            String json = new Gson().toJson(player);
-                            session.sendMessage(new TextMessage(json));
-                        }
-
-                        // Если в мире нет ни одного игрока, значит игрок вне игры. Удалим ссылку на этот мир у игрока
-                        else if(!world.havePlayers()){
-                            Global.removePlayerFromWorld(session.getId());
-                            session.sendMessage(new TextMessage("noPlay"));
-                        }
-
-                        // Иначе игрок ожидает другого игрока
-                        else
-                            session.sendMessage(new TextMessage("wait"));
-
+                    
+                    // Если есть мир, и в нем есть оба игрока, значит игра идет, отошлем клиенту состояние мира
+                    if(world != null && world.haveAllPlayers()){
+                        String json = PlayerGsonBuilder.get().toJson(player);
+                        session.sendMessage(new TextMessage(json));
                     }
-                    else{
-                        session.sendMessage(new TextMessage("noPlay"));
-                    }
-                }
+                    
+                    // Иначе отошлем статус игрока
+                    else
+                        session.sendMessage(new TextMessage(player.status.toString()));
+                }    
             }
             catch(IOException e){
                 e.printStackTrace();
