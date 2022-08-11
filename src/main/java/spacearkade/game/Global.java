@@ -82,34 +82,34 @@ public class Global {
     private static int createWorld(){
         ArkadeWorld world = new ArkadeWorld(Global.primary, 800, 600);
         int worldId = Global.primary;
-        world.addComponent(new Ball().setLocation(400, 300).setVelocity(100, -100));
-        world.addComponent(new Platform().setLocation(400, 11).setVelocity(0, 0)).setSize(100, 20).setIsCircle(false).setInfinityMass(true);
-        world.addComponent(new Platform().setLocation(400, 589).setVelocity(0, 0)).setSize(100, 20).setIsCircle(false).setInfinityMass(true);
+        world.addComponent(new Ball().setLocation(400, 300).setVelocity(150, -150));
+        world.addComponent(new Platform().setLocation(400, 11));
+        world.addComponent(new Platform().setLocation(400, 589));
         
         // Заполнение плитками лучше переписать в мапы
         for(int i = 0; i < 2; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile3().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile3().setLocation(25 + i*50, 120 + j*20));
         
         for(int i = 2; i < 4; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile2().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile2().setLocation(25 + i*50, 120 + j*20));
         
         for(int i = 4; i < 6; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile1().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile1().setLocation(25 + i*50, 120 + j*20));
         
         for(int i = 10; i < 12; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile1().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile1().setLocation(25 + i*50, 120 + j*20));
         
         for(int i = 12; i < 14; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile2().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile2().setLocation(25 + i*50, 120 + j*20));
         
         for(int i = 14; i < 16; i++)
             for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile3().setLocation(25 + i*50, 120 + j*20).setSize(50, 20).setIsCircle(false));
+                world.addComponent(new Tile3().setLocation(25 + i*50, 120 + j*20));
         
         Global.mapWorld.put(worldId, world);
         Global.primary++;

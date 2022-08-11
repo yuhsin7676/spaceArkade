@@ -2,11 +2,25 @@
     <head>
         <meta charset="utf-8">
     </head>
+    <style>
+        #container{
+            width:800px;
+            height:650px;
+            position: relative;
+            top: 50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        
+    </style>
 <body>
-    
-    <canvas id="canvas" width="800" height="600" style="border: 1px #000 solid;"></canvas>
-    <button id="playButton" onclick="socket.send('play')">Играть</button>
-    <div id="messages"></div>
+  
+    <div id="container">
+        <canvas id="canvas" width="800" height="600" style="border: 1px #000 solid;"></canvas>
+        <button id="playButton" onclick="socket.send('play')">Играть</button>
+        <div id="messages"></div>
+    </div>
     
 </body>
 </html>

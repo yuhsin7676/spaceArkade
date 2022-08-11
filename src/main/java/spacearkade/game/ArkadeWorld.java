@@ -5,17 +5,23 @@ import spacearkade.game.components.Tile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import spacearkade.engine.Component;
 import spacearkade.engine.World;
+import spacearkade.game.components.Bonus;
+import spacearkade.game.components.Platform;
+import spacearkade.game.components.Tile3;
 
 public class ArkadeWorld extends World{
     
-    public Player player1 = null;
-    public Player player2 = null;
+    private Player player1 = null;
+    private Player player2 = null;
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
     public enumStatus status = enumStatus.WAIT;
-    public Map<Integer, Component> balls = new HashMap<Integer, Component>();
-    public Map<Integer, Component> tiles = new HashMap<Integer, Component>();
+    private Map<Integer, Component> balls = new HashMap<Integer, Component>();
+    private Map<Integer, Component> tiles = new HashMap<Integer, Component>();
+    private Map<Integer, Component> bonuses = new HashMap<Integer, Component>();
+    private Map<Integer, Component> platforms = new HashMap<Integer, Component>();
     
     // Конструктор
     public ArkadeWorld(int id, int width, int height) {
@@ -26,9 +32,13 @@ public class ArkadeWorld extends World{
     public Component addComponent(Component component) {
         component = super.addComponent(component);
         if (component instanceof Ball)
-            balls.put(component.getId(), component);
-        else if (component instanceof Tile)// Используем instanseof, так как он возвращает try для наследников Tile 
-            tiles.put(component.getId(), component);
+            this.balls.put(component.getId(), component);
+        else if (component instanceof Tile)
+            this.tiles.put(component.getId(), component);
+        else if (component instanceof Bonus)
+            this.bonuses.put(component.getId(), component);
+        else if (component instanceof Platform)
+            this.platforms.put(component.getId(), component);
         return component;
     }
 
@@ -38,11 +48,50 @@ public class ArkadeWorld extends World{
         if(status == enumStatus.PLAY)
             super.update();
         
-        // Удаляем через явный итератор, иначе будет ошибка ConcurrentModificationException
+        // Удаляем шары через явный итератор, иначе будет ошибка ConcurrentModificationException
         Iterator<Map.Entry<Integer, Component>> i = balls.entrySet().iterator();
         while(i.hasNext())
             if(!components.containsKey(i.next().getKey()))
                 i.remove();
+        
+        // Аналогично поступаем с плитками
+        i = tiles.entrySet().iterator();
+        while(i.hasNext()){
+            int key = i.next().getKey();
+            if(!components.containsKey(key)){
+                
+                // Плитка 3 дает бонусы при разрушении
+                if(tiles.get(key).getClass() == Tile3.class){
+                    Component tile = tiles.get(key);
+                    this.addComponent(new Bonus()).setLocation(tile.getLocation()).setVelocity(0, 50);
+                    this.addComponent(new Bonus()).setLocation(tile.getLocation()).setVelocity(0, -50);
+                }
+                i.remove();
+                
+            }
+        }
+        
+        // Аналогично поступаем с бонусами
+        i = bonuses.entrySet().iterator();
+        while(i.hasNext())
+            if(!components.containsKey(i.next().getKey()))
+                i.remove();
+        
+        //
+        for(Map.Entry<Integer, Component> bonus : bonuses.entrySet()){
+            for(Map.Entry<Integer, Component> platform : platforms.entrySet()){
+                Vector2D bonusLocation = bonus.getValue().getLocation();
+                Vector2D platformLocation = platform.getValue().getLocation();
+                Vector2D bonusSize = bonus.getValue().getSize();
+                Vector2D platformSize = platform.getValue().getSize();
+                Vector2D difLocation = bonusLocation.subtract(platformLocation);
+                Vector2D sumSize = bonusSize.add(platformSize);
+                if(Math.abs(difLocation.getX()) <= sumSize.getX()/2 && Math.abs(difLocation.getY()) <= sumSize.getY()/2){
+                    bonus.getValue().removed();
+                    platform.getValue().setSize(120, 20);
+                }  
+            }
+        }
         
         // Если шаров не осталось, удаляем игроков из мира, так как они проиграли
         if(balls.isEmpty()){

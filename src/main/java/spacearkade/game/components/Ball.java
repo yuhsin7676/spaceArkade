@@ -11,7 +11,7 @@ public class Ball extends DynamicComponent {
             if(this.eventHit.get(i).className.equals("Platform")){
                 Vector2D platformLocation = this.eventHit.get(i).location;
                 Vector2D platformSize = this.eventHit.get(i).size;
-                double vx = 60 * (this.location.getX() - platformLocation.getX())/(platformSize.getX()/2);
+                double vx = 90 * (this.location.getX() - platformLocation.getX())/(platformSize.getX()/2);
                 this.velocity = new Vector2D(vx, this.velocity.getY());
             }
             else if(this.eventHit.get(i).className.equals("World")){

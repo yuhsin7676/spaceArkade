@@ -21,7 +21,9 @@ class Graphic{
             
             if(obj.isCircle){
                 this.ctx.beginPath();
-                this.ctx.fillStyle = "#000";
+                if(obj.className == "Ball") this.ctx.fillStyle = "#000";
+                else if(obj.className == "Bonus") this.ctx.fillStyle = "#f00";
+                
                 this.ctx.arc(locationX, locationY, obj.r, 0, Math.PI*2, true);
                 this.ctx.stroke();
             }
@@ -29,6 +31,7 @@ class Graphic{
                 if(obj.className == "Tile1") this.ctx.fillStyle = "#080";
                 else if(obj.className == "Tile2") this.ctx.fillStyle = "#cc0";
                 else if(obj.className == "Tile3") this.ctx.fillStyle = "#f80";
+                else if(obj.className == "Platform") this.ctx.fillStyle = "#000";
                 
                 this.ctx.fillRect(locationX - obj.size.x/2, locationY - obj.size.y/2, obj.size.x, obj.size.y);
             }
