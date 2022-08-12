@@ -1,3 +1,11 @@
+var url = window.location.href;
+var messages = document.getElementById("messages");
+var playButton = document.getElementById("playButton");
+//var leftButton = document.getElementById("leftButton");
+//var rightButton = document.getElementById("rightButton");
+
+///////////////////////////////////
+
 class Graphic{
     
     canvas = document.getElementById("canvas");
@@ -67,6 +75,8 @@ class Inputs{
             else if(event.code === "KeyD")
                 this._toRight = 1;
         });
+        //leftButton.addEventListener('touchstart', () => {this._toLeft = -1;});
+        //rightButton.addEventListener('touchstart', () => {this._toRight = 1;});
 
         document.addEventListener('keyup', (event) => {
             if(event.code === "KeyA")
@@ -74,6 +84,8 @@ class Inputs{
             else if(event.code === "KeyD")
                 this._toRight = 0;
         });
+        //leftButton.addEventListener('touchend', () => {this._toLeft = 0;});
+        //rightButton.addEventListener('touchend', () => {this._toRight = 0;});
     }
     
     update(){
@@ -85,15 +97,15 @@ class Inputs{
     
 }
 
+///////////////////////////////////
+
 var inputs = new Inputs();
 var graphic = new Graphic();
-var messages = document.getElementById("messages");
-var playButton = document.getElementById("playButton");
 
 //////////////// Работа с сокетом //////////////////
 
 // Сюда надо написать ip-адрес
-var socket = new WebSocket("ws://localhost:8888/websocket");
+var socket = new WebSocket(url.replace("http://", "ws://") + "websocket");
 
 socket.onmessage = function(event) {
     messages.innerHTML = "";
