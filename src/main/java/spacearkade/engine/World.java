@@ -2,6 +2,7 @@ package spacearkade.engine;
 
 import static java.lang.Math.sqrt;
 import static java.lang.Math.abs;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -16,11 +17,17 @@ public class World {
     private final int height;
     public final int id;
     private int primary = 0;
+    private ArrayDeque<Component> addQueue = new ArrayDeque<Component>();
     public Map<Integer, Component> components = new HashMap<Integer, Component>();
     protected double n = 1; // Точность расчета коллизий
     protected int frame = 60; // Учет количества кадров
 
-    // Конструктор
+    /**
+     * Создает мир c заданными размерами.
+     * @param id - id создаваемого мира
+     * @param width - ширина мира. Если width <= 0, то мир бесконечный по оси x
+     * @param height - высота мира. Если height <= 0, то мир бесконечный по оси y
+     */
     public World(int id, int width, int height) {
         this.id = id;
         this.width = width;
@@ -39,6 +46,25 @@ public class World {
         this.primary++;
         return component;
         
+    }
+    
+    /**
+     * Добавляет Component в очередь для вставки в мир.
+     * Возвращает ссылку на него.
+     * Чтобы перекинуть компонент из очереди в сам мир, необходимо вызвать commitAddQueue().
+     */
+    public Component addComponentToQueue(Component component){
+        addQueue.addLast(component);
+        return component;
+    }
+    
+    /**
+     * Добавляет компоненты из очереди в мир.
+     * Очередь очищается
+     */
+    public void commitAddQueue(){
+        while(addQueue.peek()!=null)
+            this.addComponent(addQueue.pop());
     }
 
     /**
@@ -61,6 +87,7 @@ public class World {
      */
     public void update(){
         calculateLocationsVelocities();
+        commitAddQueue();
     }
     
     /////////////////////////////////////////
@@ -69,9 +96,7 @@ public class World {
     //
     /////////////////////////////////////////
     
-    /**
-     * Пересчитывает координаты и скорости всех Component.
-     */
+    // Пересчитывает координаты и скорости всех Component.
     private final void calculateLocationsVelocities(){
 
         // Обнуление eventHit
@@ -93,18 +118,20 @@ public class World {
                     
                     // Рассмотрим взаимодействие компонента с другими компонентами
                     for(Map.Entry<Integer, Component> component2 : components.entrySet())
-                        if(component2.getValue().isStaticComponent || !component.getValue().collision && !component.getValue().equals(component2.getValue()))
+                        if(component2.getValue().isStaticComponent || !component2.getValue().calculated && !component.getValue().collision && !component.getValue().equals(component2.getValue()))
                             relationshipObjects(component.getValue(), component2.getValue());
                         
                     // Изменим местоположение компонента после всех взаимодействий
                     component.getValue().location = component.getValue().location.add(component.getValue().d);
+                    component.getValue().calculated = true;
+                    
                 }
                 
             }
 
-            // Сброс свойств collision (что это такое, описано ниже)
+            // Сброс свойств collision и calculated (что это такое, описано ниже)
             for(Map.Entry<Integer, Component> component : components.entrySet())
-                component.getValue().collision = false;
+                component.getValue().collision = component.getValue().calculated = false;
         }
         
         // Удаляем через явный итератор, иначе будет ошибка ConcurrentModificationException
@@ -124,62 +151,71 @@ public class World {
 	
         if(dynamicCombonent.enableRelation.ordinal() >= EnableRelation.ONLY_INTERSECTION.ordinal()){
         
-        double cx = dynamicCombonent.location.getX();
-        double cy = dynamicCombonent.location.getY();
-        double vx = dynamicCombonent.velocity.getX()/(n*frame);
-        double vy = dynamicCombonent.velocity.getY()/(n*frame);
-        double w,h;
-        if(dynamicCombonent.isCircle) w = h = 2*dynamicCombonent.r;
-        else{
-            w = dynamicCombonent.size.getX();
-            h = dynamicCombonent.size.getY();
-        }
+            double cx = dynamicCombonent.location.getX();
+            double cy = dynamicCombonent.location.getY();
+            double vx = dynamicCombonent.velocity.getX()/(n*frame);
+            double vy = dynamicCombonent.velocity.getY()/(n*frame);
+            double w,h;
+            if(dynamicCombonent.isCircle) w = h = 2*dynamicCombonent.r;
+            else{
+                w = dynamicCombonent.size.getX();
+                h = dynamicCombonent.size.getY();
+            }
 
-        // Столкновение с краем мира по x
-        if (cx + vx < w/2){
-            if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
-                dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
-                dynamicCombonent.d = new Vector2D(-vx + w - 2*cx, dynamicCombonent.d.getY());
-                dynamicCombonent.collision = true;
-                writeEventHitWithWorld(dynamicCombonent);
+            // Столкновение с краем мира по x
+            if (this.width > 0){
+                if (cx + vx < w/2){
+                    if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
+                        dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
+                        dynamicCombonent.d = new Vector2D(-vx + w - 2*cx, dynamicCombonent.d.getY());
+                        dynamicCombonent.collision = true;
+                        writeEventHitWithWorld(dynamicCombonent);
+                    }
+                    writeEventIntersectionWithWorld(dynamicCombonent);
+                }
+                else if (cx + vx > this.width - w/2){
+                    if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
+                        dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
+                        dynamicCombonent.d = new Vector2D(-vx + 2*(this.width - w/2) - 2*cx, dynamicCombonent.d.getY());
+                        dynamicCombonent.collision = true;
+                        writeEventHitWithWorld(dynamicCombonent);
+                    }
+                    writeEventIntersectionWithWorld(dynamicCombonent);
+                }
+                else{
+                    dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
+                }
             }
-            writeEventIntersectionWithWorld(dynamicCombonent);
-        }
-        else if (cx + vx > this.width - w/2){
-            if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
-                dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(dynamicCombonent.velocity.getX(), 0));
-                dynamicCombonent.d = new Vector2D(-vx + 2*(this.width - w/2) - 2*cx, dynamicCombonent.d.getY());
-                dynamicCombonent.collision = true;
-                writeEventHitWithWorld(dynamicCombonent);
-            }
-            writeEventIntersectionWithWorld(dynamicCombonent);
-        }
-        else{
-            dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
-        }
+            else
+                dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
 
-        // Столкновение с краем мира по y
-        if (cy + vy < h/2){
-            if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
-                dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
-                dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + h - 2*cy);
-                dynamicCombonent.collision = true;
-                writeEventHitWithWorld(dynamicCombonent);
+            // Столкновение с краем мира по y
+            if (this.height > 0){
+                if (cy + vy < h/2){
+                    if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
+                        dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
+                        dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + h - 2*cy);
+                        dynamicCombonent.collision = true;
+                        writeEventHitWithWorld(dynamicCombonent);
+                    }
+                    writeEventIntersectionWithWorld(dynamicCombonent);
+                }
+                else if (cy + vy > this.height - h/2){
+                    if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
+                        dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
+                        dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + 2*(this.height - h/2) - 2*cy);
+                        dynamicCombonent.collision = true;
+                        writeEventHitWithWorld(dynamicCombonent);
+                    }
+                    writeEventIntersectionWithWorld(dynamicCombonent);
+                }
+                else{
+                    dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
+                }
             }
-            writeEventIntersectionWithWorld(dynamicCombonent);
-        }
-        else if (cy + vy > this.height - h/2){
-            if(dynamicCombonent.enableRelation == EnableRelation.COLLISION){
-                dynamicCombonent.velocity = dynamicCombonent.velocity.subtract(2, new Vector2D(0, dynamicCombonent.velocity.getY()));
-                dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), -vy + 2*(this.height - h/2) - 2*cy);
-                dynamicCombonent.collision = true;
-                writeEventHitWithWorld(dynamicCombonent);
-            }
-            writeEventIntersectionWithWorld(dynamicCombonent);
-        }
-        else{
-            dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
-        }
+            else
+                dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
+            
         }
         
     }
@@ -207,6 +243,7 @@ public class World {
     /////////////////
     
     private void writeEventHits(Component a1, Component a2){
+        a1.collision = a2.collision = true;
         Event eventHit1 = new Event();
         Event eventHit2 = new Event();
         eventHit1.id = a2.id;
@@ -223,8 +260,8 @@ public class World {
         eventHit2.size = a1.size;
         a1.eventHit.add(eventHit1);
         a2.eventHit.add(eventHit2);
-        a1.eventHitListener();
-        a2.eventHitListener();
+        a1.eventHitListener(eventHit1);
+        a2.eventHitListener(eventHit2);
     }
     
     private void writeEventHitWithWorld(Component a){
@@ -233,7 +270,7 @@ public class World {
         eventHit.typeName = "World";
         eventHit.className = "World";
         a.eventHit.add(eventHit);
-        a.eventHitListener();
+        a.eventHitListener(eventHit);
     }
     
     private void writeEventIntersections(Component a1, Component a2){
@@ -253,8 +290,8 @@ public class World {
         eventIntersection2.size = a1.size;
         a1.eventIntersection.add(eventIntersection1);
         a2.eventIntersection.add(eventIntersection2);
-        a1.eventIntersectionListener();
-        a2.eventIntersectionListener();
+        a1.eventIntersectionListener(eventIntersection1);
+        a2.eventIntersectionListener(eventIntersection2);
     }
     
     private void writeEventIntersectionWithWorld(Component a){
@@ -263,12 +300,13 @@ public class World {
         eventIntersection.typeName = "World";
         eventIntersection.className = "World";
         a.eventIntersection.add(eventIntersection);
-        a.eventIntersectionListener();
+        a.eventIntersectionListener(eventIntersection);
     }
     
     /////////////////
     
-    private void changeVelocityAndCalcD(Component a1, Component a2, Vector2D vn1, Vector2D vn2, Vector2D vt1, Vector2D vt2, double part){
+    // Считает новые скорости по закону сохранения импульса и задает смещение компонентам (абсолютно упругие удары)
+    private void changeVelocityAndD(Component a1, Component a2, Vector2D vn1, Vector2D vn2, Vector2D vt1, Vector2D vt2, double part){
         
         // Посчитаем новые скорости компонентов
         Vector2D v1 = new Vector2D(0, 0);
@@ -289,6 +327,7 @@ public class World {
             double m1 = a1.m, m2 = a2.m;
             v1 = (vn1.scalarMultiply(m1/m2-1).add(2, vn2)).scalarMultiply(m2/(1+m1)).add(vt1);
             v2 = (vn2.scalarMultiply(m2/m1-1).add(2, vn1)).scalarMultiply(m1/(1+m2)).add(vt2);
+            
         }
         
         // Изменяем скорости
@@ -296,7 +335,7 @@ public class World {
         Vector2D v20 = a2.velocity.scalarMultiply(1/n/frame);
         a1.velocity = v1.scalarMultiply(n*frame);
         a2.velocity = v2.scalarMultiply(n*frame);
-
+        
         // Запишем смещения
         a1.d = v10.scalarMultiply(part).add(1-part, v1);
         a2.d = v20.scalarMultiply(part).add(1-part, v2);
@@ -305,7 +344,8 @@ public class World {
 
     }
     
-    private Vector2D howAxisIntersection(Component a1, Component a2){
+    // Проверяет, по какой оси пересечение будет раньше. Возвращает часть пути до соударения по x и по y. Если пересечение возможно, но далеко, x = y = 2 
+    private Vector2D calculatePartsXYBeforeIntersection(Component a1, Component a2){
     
         Vector2D location10 = a1.location;
         Vector2D location20 = a2.location; 
@@ -319,18 +359,24 @@ public class World {
         double partX = 1; 
         double partY = 1;
         
-        /////// По какой оси пересечение раньше? ////////////
-        // Слева или справа
-        if( location10.getX() <= location20.getX() )
-            partX = (w1/2 + w2/2 + location10.getX() - location20.getX())/(velocity20.getX() - velocity10.getX());
-        else if( location10.getX() > location20.getX() )
-            partX = (w1/2 + w2/2 + location20.getX() - location10.getX())/(velocity10.getX() - velocity20.getX());
+        try{
+            /////// По какой оси пересечение раньше? ////////////
+            // Слева или справа
+            if( location10.getX() <= location20.getX())
+                partX = (w1/2 + w2/2 + location10.getX() - location20.getX())/(velocity20.getX() - velocity10.getX());
+            else if( location10.getX() > location20.getX() )
+                partX = (w1/2 + w2/2 + location20.getX() - location10.getX())/(velocity10.getX() - velocity20.getX());
 
-        // Либо сверху или снизу
-        if( location10.getY() <= location20.getY() )
-            partY = (h1/2 + h2/2 + location10.getY() - location20.getY())/(velocity20.getY() - velocity10.getY());
-        else if( location10.getY() > location20.getY() )
-            partY = (h1/2 + h2/2 + location20.getY() - location10.getY())/(velocity10.getY() - velocity20.getY());
+            // Либо сверху или снизу
+            if( location10.getY() <= location20.getY() )
+                partY = (h1/2 + h2/2 + location10.getY() - location20.getY())/(velocity20.getY() - velocity10.getY());
+            else if( location10.getY() > location20.getY() )
+                partY = (h1/2 + h2/2 + location20.getY() - location10.getY())/(velocity10.getY() - velocity20.getY());
+            }
+        catch(Exception e){
+            partX = partY = 1;
+            e.printStackTrace();
+        }
         
         // Обозначим возможные точки соударения
         Vector2D c2x = location20.add(partX, velocity20);
@@ -348,12 +394,13 @@ public class World {
         
     }
     
-    private void squaresOrSquareCircleRelationHelp(Component a1, Component a2){
+    // Алгоритм изменения скоростей и записи событий соударения
+    private void SquareRelationAlgoritm(Component a1, Component a2){
         
         Vector2D v10 = a1.velocity.scalarMultiply(1/n/frame);
         Vector2D v20 = a2.velocity.scalarMultiply(1/n/frame);
 
-        Vector2D parts = howAxisIntersection(a1, a2);
+        Vector2D parts = calculatePartsXYBeforeIntersection(a1, a2);
         double partX = parts.getX();
         double partY = parts.getY();
         double part;
@@ -365,7 +412,8 @@ public class World {
             Vector2D vn2 = new Vector2D(v20.getX(), 0);
             Vector2D vt1 = new Vector2D(0, v10.getY());
             Vector2D vt2 = new Vector2D(0, v20.getY());
-            changeVelocityAndCalcD(a1, a2, vn1, vn2, vt1, vt2, part);
+            
+            changeVelocityAndD(a1, a2, vn1, vn2, vt1, vt2, part);
         }
 
         // Пересечение сверху или снизу!
@@ -375,7 +423,8 @@ public class World {
             Vector2D vn2 = new Vector2D(0, v20.getY());
             Vector2D vt1 = new Vector2D(v10.getX(), 0);
             Vector2D vt2 = new Vector2D(v20.getX(), 0);
-            changeVelocityAndCalcD(a1, a2, vn1, vn2, vt1, vt2, part);
+            
+            changeVelocityAndD(a1, a2, vn1, vn2, vt1, vt2, part);
         }
 
         writeEventHits(a1, a2);
@@ -391,10 +440,10 @@ public class World {
         Vector2D c10 = a1.location, c20 = a2.location;
         Vector2D v10 = a1.velocity.scalarMultiply(1/n/frame), v20 = a2.velocity.scalarMultiply(1/n/frame);
 
-        // Определим, есть ли соударение
+        // Определим, есть ли пересечение
         if(abs((c10.getX() + v10.getX()) - (c20.getX() + v20.getX())) < (w1/2 + w2/2) && abs((c10.getY() + v10.getY()) - (c20.getY() + v20.getY())) < (h1/2 + h2/2)){
             if(a1.enableRelation == EnableRelation.COLLISION && a2.enableRelation == EnableRelation.COLLISION)
-                squaresOrSquareCircleRelationHelp(a1, a2);
+                SquareRelationAlgoritm(a1, a2);
             writeEventIntersections(a1, a2); 
         }
         else{
@@ -427,10 +476,10 @@ public class World {
         Vector2D Cr0 = aRect.location;                   // Начальная координата прямоугольника
         Vector2D Vr0 = aRect.velocity.scalarMultiply(1/n/frame);              // Начальная скорость прямоугольника
 
-        // Определим, есть ли соударение
+        // Определим, есть ли пересечение (здесь круг считается как квадрат стороной 2r)
         if(abs((Cc0.getX() + Vc0.getX()) - (Cr0.getX() + Vr0.getX())) < (r + w/2) && abs((Cc0.getY() + Vc0.getY()) - (Cr0.getY() + Vr0.getY())) < (r + h/2)){
             if(a1.enableRelation == EnableRelation.COLLISION && a2.enableRelation == EnableRelation.COLLISION)
-                squaresOrSquareCircleRelationHelp(a1, a2);
+                SquareRelationAlgoritm(a1, a2);
             writeEventIntersections(a1, a2); 
         }
         else{
@@ -450,11 +499,12 @@ public class World {
         Vector2D v10 = a1.velocity.scalarMultiply(1/n/frame);
         Vector2D v20 = a2.velocity.scalarMultiply(1/n/frame);
 
+        // Определим, есть ли пересечение
         if (a1.location.add(v10).subtract(a2.location.add(v20)).getNorm() < dr){
 
             if(a1.enableRelation == EnableRelation.COLLISION && a2.enableRelation == EnableRelation.COLLISION){
                 
-                // Находим точку соударения(вернее,a - часть пути до соударения???)
+                // Находим точку соударения(вернее, part - часть пути до соударения???)
                 double cx = a2.location.getX() - a1.location.getX();
                 double cy = a2.location.getY() - a1.location.getY();
                 double vx = v20.getX() - v10.getX();
@@ -473,26 +523,36 @@ public class World {
                 Vector2D coor1 = a1.location.add(part, v10);
                 Vector2D coor2 = a2.location.add(part, v20);
 
-                // Находим нормальные и тангенсальные составляющие скоростей
-                Vector2D vOs = coor2.subtract(coor1);
-                Vector2D vn1 = new Vector2D(0, 0);
-                Vector2D vn2 = new Vector2D(0, 0);
-                Vector2D vt1 = new Vector2D(0, 0);
-                Vector2D vt2 = new Vector2D(0, 0);
-                if (v10.getNorm() != 0){
-                    double cos1 = v10.dotProduct(vOs)/( v10.getNorm()*vOs.getNorm() ); // Скалярное произведением векторов
-                    vn1 = vOs.scalarMultiply(v10.getNorm() * cos1/vOs.getNorm());
-                    vt1 = v10.subtract(vn1);
-                }
+                // 
+                if(!coor1.equals(coor2)){
+                    // Находим нормальные и тангенсальные составляющие скоростей
+                    Vector2D vOs = coor2.subtract(coor1);
+                    Vector2D vn1 = new Vector2D(0, 0);
+                    Vector2D vn2 = new Vector2D(0, 0);
+                    Vector2D vt1 = new Vector2D(0, 0);
+                    Vector2D vt2 = new Vector2D(0, 0);
 
-                if(v20.getNorm() != 0){
-                    double cos2 = v20.dotProduct(vOs)/(v20.getNorm() * vOs.getNorm());
-                    vn2 = vOs.scalarMultiply(v20.getNorm() * cos2/vOs.getNorm());
-                    vt2 = v20.subtract(vn2);
-                }
+                    if (v10.getNorm() != 0){
+                        double cos1 = v10.dotProduct(vOs)/( v10.getNorm()*vOs.getNorm() ); // Скалярное произведением векторов
+                        vn1 = vOs.scalarMultiply(v10.getNorm() * cos1/vOs.getNorm());
+                        vt1 = v10.subtract(vn1);
+                    }
 
-                // Изменяем скорости
-                changeVelocityAndCalcD(a1, a2, vn1, vn2, vt1, vt2, part);
+                    if(v20.getNorm() != 0){
+                        double cos2 = v20.dotProduct(vOs)/(v20.getNorm() * vOs.getNorm());
+                        vn2 = vOs.scalarMultiply(v20.getNorm() * cos2/vOs.getNorm());
+                        vt2 = v20.subtract(vn2);
+                    }
+                
+                    // Изменяем скорости
+                    changeVelocityAndD(a1, a2, vn1, vn2, vt1, vt2, part);
+                }
+                
+                // Если начальные координаты совпали, то пусть шары летят куда летели
+                else{
+                    a1.d = v10;
+                    a2.d = v20;
+                }
                 writeEventHits(a1, a2);
                 
             }

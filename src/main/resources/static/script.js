@@ -22,7 +22,15 @@ class Graphic{
             if(obj.isCircle){
                 this.ctx.beginPath();
                 if(obj.className == "Ball") this.ctx.fillStyle = "#fff";
-                else if(obj.className == "Bonus") this.ctx.fillStyle = "#f00";
+                else if(obj.className == "Bonus1") this.ctx.fillStyle = "#0b0";
+                else if(obj.className == "Bonus2") this.ctx.fillStyle = "#0f8";
+                else if(obj.className == "Bonus3") this.ctx.fillStyle = "#08f";
+                else if(obj.className == "Bonus4") this.ctx.fillStyle = "#80f";
+                
+                else if(obj.className == "AntiBonus1") this.ctx.fillStyle = "#b80";
+                else if(obj.className == "AntiBonus2") this.ctx.fillStyle = "#b00";
+                else if(obj.className == "AntiBonus3") this.ctx.fillStyle = "#f00";
+                else if(obj.className == "AntiBonus4") this.ctx.fillStyle = "#f40";
                 
                 this.ctx.arc(locationX, locationY, obj.r, 0, Math.PI*2, true);
                 this.ctx.stroke();

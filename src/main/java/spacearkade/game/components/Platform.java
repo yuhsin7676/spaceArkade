@@ -14,12 +14,5 @@ public class Platform extends DynamicComponent{
         this.infinityMass = true;
         this.velocity = new Vector2D(0, 0);
     }
-
-    @Override
-    public void eventIntersectionListener() {
-        for(int i = 0; i < this.eventIntersection.size(); i++)
-            if(this.eventIntersection.get(i).className.equals("Bonus"))
-                this.size = new Vector2D(120, 20);
-    }
     
 }

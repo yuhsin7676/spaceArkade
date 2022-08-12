@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Map;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -72,8 +73,15 @@ public class GameLoop extends ApplicationAdapter{
                     
                     // Если есть мир, и в нем есть оба игрока, значит игра идет, отошлем клиенту состояние мира
                     if(world != null && world.haveAllPlayers()){
-                        String json = PlayerGsonBuilder.get().toJson(player);
-                        session.sendMessage(new TextMessage(json));
+                        try{
+                            String json = PlayerGsonBuilder.get().toJson(player);
+                            session.sendMessage(new TextMessage(json));
+                        }
+                        catch(Exception e){
+                            //for(Map.Entry<Integer, spacearkade.engine.Component> entry : world.components.entrySet())
+                                //System.out.println(entry.getValue().getId());
+                            e.printStackTrace();
+                        }
                     }
                     
                     // Иначе отошлем статус игрока
@@ -81,7 +89,7 @@ public class GameLoop extends ApplicationAdapter{
                         session.sendMessage(new TextMessage(player.status.toString()));
                 }    
             }
-            catch(IOException e){
+            catch(Exception e){
                 e.printStackTrace();
             }
         }

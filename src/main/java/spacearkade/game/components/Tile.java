@@ -1,6 +1,7 @@
 package spacearkade.game.components;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import spacearkade.engine.Event;
 import spacearkade.engine.StaticComponent;
 
 public class Tile extends StaticComponent{
@@ -14,10 +15,12 @@ public class Tile extends StaticComponent{
     }
 
     @Override
-    public void eventHitListener() {
-        this.health -= 1;
-        if(this.health <= 0)
-            this.canBeRemove = true;
+    public void eventHitListener(Event eventHit) {
+        if(eventHit.className.equals("Ball")){
+            this.health -= 1;
+            if(this.health <= 0)
+                this.canBeRemove = true;
+        }
     }
       
 }

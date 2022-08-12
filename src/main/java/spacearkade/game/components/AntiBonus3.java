@@ -1,21 +1,22 @@
 package spacearkade.game.components;
 
+import java.util.Map;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import spacearkade.engine.Component;
 import spacearkade.engine.Event;
 
-public class Bonus1 extends Bonus {
+public class AntiBonus3 extends Bonus {
 
-    public Bonus1() {
-        this.className = "Bonus1";
+    public AntiBonus3() {
+        this.className = "AntiBonus3";
     }
 
     @Override
     public void eventIntersectionListener(Event eventIntersection) {
         if(eventIntersection.className.equals("Platform")){
-            Component platform = this.arkadeWorld.components.get(eventIntersection.id);
-            if(platform.getSize().getX() < 120)
-                platform.setSize(platform.getSize().add(new Vector2D(20, 0)));
+            for(Map.Entry<Integer, Component> entry : this.balls.entrySet())
+                if(entry.getValue().getVelocity().getY() <= 180)
+                    entry.getValue().setVelocity(entry.getValue().getVelocity().scalarMultiply(1.25));
         }
                        
         super.eventIntersectionListener(eventIntersection);

@@ -18,6 +18,7 @@ public abstract class Component {
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
     protected boolean isStaticComponent = false;
     protected boolean collision = false;
+    protected boolean calculated = false;
     protected EnableRelation enableRelation = EnableRelation.COLLISION;
     protected boolean infinityMass = false;
     protected ArrayList<Event> eventIntersection;
@@ -107,10 +108,10 @@ public abstract class Component {
     }
     
     // Действия
-    public void eventHitListener(){
+    public void eventHitListener(Event event){
     }
     
-    public void eventIntersectionListener(){
+    public void eventIntersectionListener(Event event){
     }
     
     public void update(){
