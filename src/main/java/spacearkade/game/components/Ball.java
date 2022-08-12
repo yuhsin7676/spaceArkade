@@ -25,13 +25,5 @@ public class Ball extends DynamicComponent {
         }
 
     }
-     
-    @Override
-    public String getClassName() {
-        return "Ball";
-    }
-    
       
 }
-
-    

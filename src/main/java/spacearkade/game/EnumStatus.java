@@ -1,6 +1,6 @@
 package spacearkade.game;
 
-public enum enumStatus {
+public enum EnumStatus {
     
     NOPLAY ("noPlay"),
     WAIT ("wait"),
@@ -10,7 +10,7 @@ public enum enumStatus {
     
     private String title;
 
-    enumStatus(String title) {
+    EnumStatus(String title) {
         this.title = title;
     }
     

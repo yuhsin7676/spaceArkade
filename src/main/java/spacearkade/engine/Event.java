@@ -2,7 +2,7 @@ package spacearkade.engine;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-public class EventHit {
+public class Event{
     
     // Структура данных о соударении. Меня она бесит!
     public int id;

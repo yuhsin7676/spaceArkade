@@ -18,9 +18,10 @@ public abstract class Component {
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
     protected boolean isStaticComponent = false;
     protected boolean collision = false;
-    protected boolean enableCollision = true;
+    protected EnableRelation enableRelation = EnableRelation.COLLISION;
     protected boolean infinityMass = false;
-    protected ArrayList<EventHit> eventHit;
+    protected ArrayList<Event> eventIntersection;
+    protected ArrayList<Event> eventHit;
     
     //////////////////////// Методы ////////////////////////
 
@@ -55,10 +56,6 @@ public abstract class Component {
     
     public boolean getIsInfinityMass() {
         return infinityMass;
-    }
-    
-    public String getClassName(){
-        return this.className;
     }
 
     // Функции ввода (возвращает данный объект, так как он использует паттерн строитель)
@@ -111,6 +108,9 @@ public abstract class Component {
     
     // Действия
     public void eventHitListener(){
+    }
+    
+    public void eventIntersectionListener(){
     }
     
     public void update(){

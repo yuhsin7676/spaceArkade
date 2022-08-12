@@ -17,7 +17,7 @@ public class ArkadeWorld extends World{
     private Player player1 = null;
     private Player player2 = null;
     protected boolean canBeRemove = false; //Если true, то в следующем update компонент будет удален
-    public enumStatus status = enumStatus.WAIT;
+    public EnumStatus status = EnumStatus.WAIT;
     private Map<Integer, Component> balls = new HashMap<Integer, Component>();
     private Map<Integer, Component> tiles = new HashMap<Integer, Component>();
     private Map<Integer, Component> bonuses = new HashMap<Integer, Component>();
@@ -35,17 +35,13 @@ public class ArkadeWorld extends World{
             this.balls.put(component.getId(), component);
         else if (component instanceof Tile)
             this.tiles.put(component.getId(), component);
-        else if (component instanceof Bonus)
-            this.bonuses.put(component.getId(), component);
-        else if (component instanceof Platform)
-            this.platforms.put(component.getId(), component);
         return component;
     }
 
     @Override
     public void update() {
         // Выполним обновление мира если оба игрока присутствуют
-        if(status == enumStatus.PLAY)
+        if(status == EnumStatus.PLAY)
             super.update();
         
         // Удаляем шары через явный итератор, иначе будет ошибка ConcurrentModificationException
@@ -71,38 +67,16 @@ public class ArkadeWorld extends World{
             }
         }
         
-        // Аналогично поступаем с бонусами
-        i = bonuses.entrySet().iterator();
-        while(i.hasNext())
-            if(!components.containsKey(i.next().getKey()))
-                i.remove();
-        
-        // Смотрим, есть ли пересечения между платформой и бонусом
-        for(Map.Entry<Integer, Component> bonus : bonuses.entrySet()){
-            for(Map.Entry<Integer, Component> platform : platforms.entrySet()){
-                Vector2D bonusLocation = bonus.getValue().getLocation();
-                Vector2D platformLocation = platform.getValue().getLocation();
-                Vector2D bonusSize = bonus.getValue().getSize();
-                Vector2D platformSize = platform.getValue().getSize();
-                Vector2D difLocation = bonusLocation.subtract(platformLocation);
-                Vector2D sumSize = bonusSize.add(platformSize);
-                if(Math.abs(difLocation.getX()) <= sumSize.getX()/2 && Math.abs(difLocation.getY()) <= sumSize.getY()/2){
-                    bonus.getValue().removed();
-                    platform.getValue().setSize(120, 20);
-                }  
-            }
-        }
-        
         // Если шаров не осталось, удаляем игроков из мира, так как они проиграли
         if(balls.isEmpty()){
-            this.status = enumStatus.LOSE;
+            this.status = EnumStatus.LOSE;
             removePlayer1();
             removePlayer2();
         }
         
         // Если плиток не осталось, удаляем игроков из мира, так как они выиграли
         if(tiles.isEmpty()){
-            this.status = enumStatus.WIN;
+            this.status = EnumStatus.WIN;
             removePlayer1();
             removePlayer2();
         }
@@ -118,7 +92,7 @@ public class ArkadeWorld extends World{
             player.object = this.components.get(1);
             this.player1 = player;
             if(this.player2 != null)
-                this.status = enumStatus.PLAY;
+                this.status = EnumStatus.PLAY;
             player.status = this.status;
             return 1;
         }
@@ -127,7 +101,7 @@ public class ArkadeWorld extends World{
             player.object = this.components.get(2);
             this.player2 = player;
             if(this.player1 != null) 
-                this.status = enumStatus.PLAY;
+                this.status = EnumStatus.PLAY;
             player.status = this.status;
             return 2;
         }
@@ -141,9 +115,9 @@ public class ArkadeWorld extends World{
      */
     public void removePlayer1(){
         this.player1.worldPointer = null;
-        if(this.status == enumStatus.PLAY || this.status == enumStatus.WAIT){
-            this.player1.status = enumStatus.NOPLAY;
-            this.status = enumStatus.WAIT;
+        if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
+            this.player1.status = EnumStatus.NOPLAY;
+            this.status = EnumStatus.WAIT;
         }
         else
             this.player1.status = this.status;
@@ -157,9 +131,9 @@ public class ArkadeWorld extends World{
      */
     public void removePlayer2(){
         this.player2.worldPointer = null;
-        if(this.status == enumStatus.PLAY || this.status == enumStatus.WAIT){
-            this.player2.status = enumStatus.NOPLAY;
-            this.status = enumStatus.WAIT;
+        if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
+            this.player2.status = EnumStatus.NOPLAY;
+            this.status = EnumStatus.WAIT;
         }
         else
             this.player2.status = this.status;

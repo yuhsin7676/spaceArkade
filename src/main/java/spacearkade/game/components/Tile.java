@@ -19,10 +19,5 @@ public class Tile extends StaticComponent{
         if(this.health <= 0)
             this.canBeRemove = true;
     }
-    
-    @Override
-    public String getClassName() {
-        return this.className;
-    }
       
 }

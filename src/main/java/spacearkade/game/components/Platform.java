@@ -16,13 +16,10 @@ public class Platform extends DynamicComponent{
     }
 
     @Override
-    public void eventHitListener() {
-        
-    }
-    
-    @Override
-    public String getClassName() {
-        return "Platform";
+    public void eventIntersectionListener() {
+        for(int i = 0; i < this.eventIntersection.size(); i++)
+            if(this.eventIntersection.get(i).className.equals("Bonus"))
+                this.size = new Vector2D(120, 20);
     }
     
 }
