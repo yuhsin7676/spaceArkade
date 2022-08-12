@@ -14,8 +14,8 @@ public class Bonus3 extends Bonus {
     public void eventIntersectionListener(Event eventIntersection) {
         if(eventIntersection.className.equals("Platform")){
             for(Map.Entry<Integer, Component> entry : this.balls.entrySet())
-                if(entry.getValue().getVelocity().getY() >= 120)
-                    entry.getValue().setVelocity(entry.getValue().getVelocity().scalarMultiply(0.8));
+                if(entry.getValue().getVelocity().getY() >= 90)
+                    entry.getValue().setVelocity(entry.getValue().getVelocity().scalarMultiply(0.6));
         }
                        
         super.eventIntersectionListener(eventIntersection);

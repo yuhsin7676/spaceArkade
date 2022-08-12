@@ -63,7 +63,7 @@ public class ArkadeWorld extends World{
                 // Плитка 3 дает бонусы при разрушении
                 if(tiles.get(key).getClass() == Tile3.class){
                     Component tile = tiles.get(key);
-                    int number = 2;//1 + new Random().nextInt(8);
+                    int number = 1 + new Random().nextInt(8);
                     if(number == 1){
                         this.addComponent(new Bonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, 50);
                         this.addComponent(new Bonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, -50);

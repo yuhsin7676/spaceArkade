@@ -14,7 +14,7 @@ public class Bonus4 extends Bonus {
     public void eventIntersectionListener(Event eventIntersection) {
         if(eventIntersection.className.equals("Platform")){
             for(Map.Entry<Integer, Component> entry : this.balls.entrySet())
-                if(entry.getValue().getRadius() < 12)
+                if(entry.getValue().getRadius() < 14)
                     entry.getValue().setRadius(entry.getValue().getRadius() + 2);
         }
                        
