@@ -11,7 +11,7 @@
 
 1) Скачать и установить java-jre или java-jdk 8+ (например, отсюда: https://adoptopenjdk.net/upstream.html?variant=openjdk8&jvmVariant=hotspot)
 2) Скачать исходный код (code->download ZIP или, если на вашем компьютере установлен git, командой: git clone https://github.com/yuhsin7676/spaceArkade.git)
-3) Узнать свой ip-адрес (Набрать команду в командной строке Windows: ipconfig, в терминале Linux: ip-address). Обычно это 192.168... или 10...
+3) Узнать свой ip-адрес (Набрать команду в командной строке Windows: <b>ipconfig</b>, в терминале Linux: ip-address). Обычно это 192.168... или 10...
 4) Запустить spaceArkade.jar двойным кликом мыши или командой: java -jar spaceArkade.jar
 5) Запустить на 2-х разных компьютерах, подключенных к одной сети, браузер и перейти на http://{ваш ip-адрес из п.3}:8888
 
