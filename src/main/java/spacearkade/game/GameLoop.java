@@ -78,8 +78,6 @@ public class GameLoop extends ApplicationAdapter{
                             session.sendMessage(new TextMessage(json));
                         }
                         catch(Exception e){
-                            //for(Map.Entry<Integer, spacearkade.engine.Component> entry : world.components.entrySet())
-                                //System.out.println(entry.getValue().getId());
                             e.printStackTrace();
                         }
                     }
