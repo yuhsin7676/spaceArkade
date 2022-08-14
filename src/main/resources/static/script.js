@@ -13,6 +13,7 @@ class Graphic{
     imageTile1;
     imageTile2;
     imageTile3;
+    imagePlatform;
     turnOver = false;
     
     constructor(){
