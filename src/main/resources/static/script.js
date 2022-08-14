@@ -10,7 +10,28 @@ class Graphic{
     
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
+    imageTile1;
+    imageTile2;
+    imageTile3;
     turnOver = false;
+    
+    constructor(){
+        this.loadImages();
+    }
+    
+    loadImages(){
+        this.imageTile1 = new Image();
+        this.imageTile1.src = "media/tile1.png";
+        
+        this.imageTile2 = new Image();
+        this.imageTile2.src = "media/tile2.png";
+        
+        this.imageTile3 = new Image();
+        this.imageTile3.src = "media/tile3.png";
+        
+        this.imagePlatform = new Image();
+        this.imagePlatform.src = "media/platform.png";
+    }
     
     update(data){
         this.clear();
@@ -45,12 +66,14 @@ class Graphic{
                 this.ctx.fill();
             }
             else{
-                if(obj.className == "Tile1") this.ctx.fillStyle = "#080";
-                else if(obj.className == "Tile2") this.ctx.fillStyle = "#cc0";
-                else if(obj.className == "Tile3") this.ctx.fillStyle = "#f80";
-                else if(obj.className == "Platform") this.ctx.fillStyle = "#000";
+                var image;
+                if(obj.className == "Tile1") image = this.imageTile1;
+                else if(obj.className == "Tile2") image = this.imageTile2;
+                else if(obj.className == "Tile3") image = this.imageTile3;
+                else if(obj.className == "Platform") image = this.imagePlatform;
                 
-                this.ctx.fillRect(locationX - obj.size.x/2, locationY - obj.size.y/2, obj.size.x, obj.size.y);
+                this.ctx.drawImage(image, locationX - obj.size.x/2, locationY - obj.size.y/2, obj.size.x, obj.size.y);
+                //this.ctx.fillRect(locationX - obj.size.x/2, locationY - obj.size.y/2, obj.size.x, obj.size.y);
             }
         }
     }
