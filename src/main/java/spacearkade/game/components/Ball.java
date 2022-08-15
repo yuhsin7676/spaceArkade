@@ -23,7 +23,8 @@ public class Ball extends DynamicComponent {
             this.arkadeWorld.addSound("impactPlatform");
         }
         else if(eventHit.className.equals("World")){
-            if(this.location.getY() <= 3 + this.r || this.location.getY() >= 597 - this.r)
+            this.arkadeWorld.addSound("impactWorld");
+            if(this.location.getY() <= this.r/2 + this.r || this.location.getY() >= 600 - this.r/2 - this.r)
                 this.removed();
         }
     }
@@ -36,10 +37,10 @@ public class Ball extends DynamicComponent {
     @Override
     public void update() {
         
-        if(this.velocity.getY() < 150)
-            this.velocity = this.velocity.add(new Vector2D(0, 0.02));
-        else if(this.velocity.getY() > 150)
-           this.velocity = this.velocity.subtract(new Vector2D(0, 0.02));
+        if(this.velocity.getNorm() < 225)
+            this.velocity = this.velocity.scalarMultiply(1.002);
+        else if(this.velocity.getNorm() > 225)
+           this.velocity = this.velocity.scalarMultiply(0.998);
         
     }
     

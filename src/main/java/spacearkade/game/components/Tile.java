@@ -15,7 +15,7 @@ public class Tile extends StaticComponent{
     public Tile(){
         this.className = "Tile";
         this.isCircle = false;
-        this.size = new Vector2D(50, 20);
+        this.size = new Vector2D(80, 20);
     }
 
     public Tile setWorldPointer(ArkadeWorld arkadeWorld){

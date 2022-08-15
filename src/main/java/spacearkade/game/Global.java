@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Random;
+import spacearkade.engine.Component;
 import spacearkade.game.components.Tile1;
 import spacearkade.game.components.Tile2;
 import spacearkade.game.components.Tile3;
@@ -16,6 +18,74 @@ public class Global {
     public static Map<Integer, ArkadeWorld> mapWorld = new HashMap<Integer, ArkadeWorld>();
     public static Map<String, Player> mapPlayer = new HashMap<String, Player>();
     public static int primary = 0;
+    public static String[][][] beginCompnents = {{ 
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
+        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
+        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
+        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
+        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"}
+    },
+        { 
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile2", "Tile2", "     "},
+        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "Tile2", "Tile2", "     "},
+        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
+        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
+        {"     ", "Tile2", "Tile2", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
+        {"     ", "Tile2", "Tile2", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
+        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"}
+    },
+        { 
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile2", "Tile2", "Tile2", "Tile3", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"Tile2", "Tile2", "Tile2", "Tile3", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
+        {"     ", "     ", "     ", "Tile3", "     ", "     ", "Tile3", "     ", "     ", "     "},
+        {"Tile1", "Tile1", "     ", "Tile3", "     ", "     ", "Tile3", "Tile1", "     ", "     "},
+        {"Tile2", "Tile2", "     ", "Tile3", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
+        {"     ", "     ", "     ", "Tile3", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "Tile2", "Tile2", "Tile3", "     ", "     ", "     ", "     ", "     ", "Tile2"},
+        {"     ", "Tile2", "Tile2", "Tile3", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "Tile3", "Tile2", "Tile2", "     "},
+        {"Tile2", "     ", "     ", "     ", "     ", "     ", "Tile3", "Tile2", "Tile2", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "Tile3", "     ", "     ", "     "},
+        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "Tile3", "     ", "Tile2", "Tile2"},
+        {"     ", "     ", "Tile1", "Tile3", "     ", "     ", "Tile3", "     ", "Tile1", "Tile1"},
+        {"     ", "     ", "     ", "Tile3", "     ", "     ", "Tile3", "     ", "     ", "     "},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile3", "Tile2", "Tile2", "Tile2"},
+        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile3", "Tile2", "Tile2", "Tile2"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
+        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"}
+    }
+    };
+
     
     // Добавляет игрока
     public static void createPlayer(String sessionId){
@@ -82,38 +152,34 @@ public class Global {
     private static int createWorld(){
         ArkadeWorld world = new ArkadeWorld(Global.primary, 800, 600);
         int worldId = Global.primary;
-        world.addComponent(new Ball().setWorldPointer(world).setLocation(400, 300).setVelocity(150, -150));
+        world.addComponent(new Ball().setWorldPointer(world).setLocation(400, 300).setVelocity(0, -150));
         world.addComponent(new Platform().setLocation(400, 11));
         world.addComponent(new Platform().setLocation(400, 589));
         
-        // Заполнение плитками лучше переписать в мапы
-        for(int i = 0; i < 2; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile3().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
-        for(int i = 2; i < 4; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile2().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
-        for(int i = 4; i < 6; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile1().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
-        for(int i = 10; i < 12; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile1().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
-        for(int i = 12; i < 14; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile2().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
-        for(int i = 14; i < 16; i++)
-            for(int j = 0; j < 17; j++)
-                world.addComponent(new Tile3().setWorldPointer(world).setLocation(25 + i*50, 120 + j*20));
-        
+        Global.addBeginCompnents(world);
         Global.mapWorld.put(worldId, world);
         Global.primary++;
         return worldId;
     };
+    
+    // Добавляет компоненты исходя из двумерного массива
+    private static void addBeginCompnents(ArkadeWorld world){
+        int k = new Random().nextInt(3);
+        for(int i = 0; i < beginCompnents[k].length; i++){
+            for(int j = 0; j < beginCompnents[k][i].length; j++){
+                switch(beginCompnents[k][i][j]){
+                    case "Tile1":
+                        world.addComponent(new Tile1().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        break;
+                    case "Tile2":
+                        world.addComponent(new Tile2().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        break;
+                    case "Tile3":
+                        world.addComponent(new Tile3().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        break;
+                }
+            }
+        }
+    }
            
 }

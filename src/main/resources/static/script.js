@@ -129,6 +129,7 @@ class Sounds{
     soundDamageTile2;
     soundDamageTile3;
     soundImpactPlatform;
+    soundImpactWorld;
     
     constructor(){
         this.loadSounds();
@@ -152,6 +153,9 @@ class Sounds{
         
         this.soundImpactPlatform = new Audio();
         this.soundImpactPlatform.src = "media/impactPlatform.mp3";
+        
+        this.soundImpactWorld = new Audio();
+        this.soundImpactWorld.src = "media/impactWorld.mp3";
     }
     
     play(data){
@@ -160,12 +164,13 @@ class Sounds{
             
             var sound = data.worldPointer.sounds[i];
             var audio;
-            if(sound == "breakTile1") audio = this.soundBreakTile1;
-            else if(sound == "breakTile2") audio = this.soundBreakTile2;
-            else if(sound == "breakTile3") audio = this.soundBreakTile3;
-            else if(sound == "damageTile2") audio = this.soundDamageTile2;
-            else if(sound == "damageTile3") audio = this.soundDamageTile3;
-            else if(sound == "impactPlatform") audio = this.soundImpactPlatform;
+            if(sound == "breakTile1") audio = this.soundBreakTile1.cloneNode();
+            else if(sound == "breakTile2") audio = this.soundBreakTile2.cloneNode();
+            else if(sound == "breakTile3") audio = this.soundBreakTile3.cloneNode();
+            else if(sound == "damageTile2") audio = this.soundDamageTile2.cloneNode();
+            else if(sound == "damageTile3") audio = this.soundDamageTile3.cloneNode();
+            else if(sound == "impactPlatform") audio = this.soundImpactPlatform.cloneNode();
+            else if(sound == "impactWorld") audio = this.soundImpactWorld.cloneNode();
                 audio.play();
         }
         
