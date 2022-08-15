@@ -18,6 +18,7 @@ public class World {
     public final int id;
     private int primary = 0;
     private ArrayDeque<Component> addQueue = new ArrayDeque<Component>();
+    private ArrayList<String> sounds = new ArrayList<String>();
     public Map<Integer, Component> components = new HashMap<Integer, Component>();
     protected double n = 1; // Точность расчета коллизий
     protected int frame = 60; // Учет количества кадров
@@ -83,9 +84,24 @@ public class World {
     };
     
     /**
+     * Добавляет звуки.
+     */
+    public void addSound(String strSound){
+        this.sounds.add(strSound);
+    }
+    
+    /**
+     * Очищает массив звуков.
+     */
+    public void clearSounds(){
+        this.sounds.clear();
+    }
+    
+    /**
      * Выполняет действия каждый кадр.
      */
     public void update(){
+        clearSounds();
         calculateLocationsVelocities();
         commitAddQueue();
     }

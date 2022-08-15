@@ -76,6 +76,7 @@ public class GameLoop extends ApplicationAdapter{
                         try{
                             String json = PlayerGsonBuilder.get().toJson(player);
                             session.sendMessage(new TextMessage(json));
+                            world.clearSounds();
                         }
                         catch(Exception e){
                             e.printStackTrace();

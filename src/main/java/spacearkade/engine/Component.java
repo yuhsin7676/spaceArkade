@@ -23,6 +23,7 @@ public abstract class Component {
     protected boolean infinityMass = false;
     protected ArrayList<Event> eventIntersection;
     protected ArrayList<Event> eventHit;
+    protected ArrayList<String> sounds = new ArrayList<String>();
     
     //////////////////////// Методы ////////////////////////
 
@@ -32,6 +33,10 @@ public abstract class Component {
     //
     public final void removed(){
         canBeRemove = true;
+    }
+    
+    public final void addSound(String strSound){
+        this.sounds.add("strSound");
     }
 
     // Функции вывода

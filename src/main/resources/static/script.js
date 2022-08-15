@@ -121,10 +121,63 @@ class Inputs{
     
 }
 
+class Sounds{
+    
+    soundBreakTile1;
+    soundBreakTile2;
+    soundBreakTile3;
+    soundDamageTile2;
+    soundDamageTile3;
+    soundImpactPlatform;
+    
+    constructor(){
+        this.loadSounds();
+    }
+    
+    loadSounds(){
+        this.soundBreakTile1 = new Audio();
+        this.soundBreakTile1.src = "media/breakTile1.mp3";
+        
+        this.soundBreakTile2 = new Audio();
+        this.soundBreakTile2.src = "media/breakTile2.mp3";
+        
+        this.soundBreakTile3 = new Audio();
+        this.soundBreakTile3.src = "media/breakTile3.mp3";
+        
+        this.soundDamageTile2 = new Audio();
+        this.soundDamageTile2.src = "media/damageTile2.mp3";
+        
+        this.soundDamageTile3 = new Audio();
+        this.soundDamageTile3.src = "media/damageTile3.mp3";
+        
+        this.soundImpactPlatform = new Audio();
+        this.soundImpactPlatform.src = "media/impactPlatform.mp3";
+    }
+    
+    play(data){
+        
+        for(var i = 0; i < data.worldPointer.sounds.length; i++){
+            
+            var sound = data.worldPointer.sounds[i];
+            var audio;
+            if(sound == "breakTile1") audio = this.soundBreakTile1;
+            else if(sound == "breakTile2") audio = this.soundBreakTile2;
+            else if(sound == "breakTile3") audio = this.soundBreakTile3;
+            else if(sound == "damageTile2") audio = this.soundDamageTile2;
+            else if(sound == "damageTile3") audio = this.soundDamageTile3;
+            else if(sound == "impactPlatform") audio = this.soundImpactPlatform;
+                audio.play();
+        }
+        
+    }
+    
+}
+
 ///////////////////////////////////
 
 var inputs = new Inputs();
 var graphic = new Graphic();
+var sounds = new Sounds();
 
 //////////////// Работа с сокетом //////////////////
 
@@ -163,6 +216,7 @@ socket.onmessage = function(event) {
             
             graphic.update(data);
             inputs.update();
+            sounds.play(data);
             socket.send(JSON.stringify({x: inputs.velocityX, y: 0})); 
     }
 };
