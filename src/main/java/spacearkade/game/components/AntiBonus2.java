@@ -14,9 +14,9 @@ public class AntiBonus2 extends Bonus {
     public void eventIntersectionListener(Event eventIntersection) {
         if(eventIntersection.className.equals("Platform")){
             if(this.balls.size() < 3)
-                this.arkadeWorld.addComponent(new Ball()).setLocation(this.getLocation()).setVelocity(50, 90);
+                this.world.addComponent(new Ball()).setLocation(this.getLocation()).setVelocity(50, 90);
             if(this.balls.size() < 3)
-                this.arkadeWorld.addComponent(new Ball()).setLocation(this.getLocation()).setVelocity(-50, 90);
+                this.world.addComponent(new Ball()).setLocation(this.getLocation()).setVelocity(-50, 90);
         }
     }
       

@@ -19,7 +19,7 @@ public class World {
     private int primary = 0;
     private ArrayDeque<Component> addQueue = new ArrayDeque<Component>();
     private ArrayList<String> sounds = new ArrayList<String>();
-    public Map<Integer, Component> components = new HashMap<Integer, Component>();
+    protected Map<Integer, Component> components = new HashMap<Integer, Component>();
     protected double n = 1; // Точность расчета коллизий
     protected int frame = 60; // Учет количества кадров
 
@@ -43,6 +43,7 @@ public class World {
     public Component addComponent(Component component){
         
         component.id = this.primary;
+        component.world = this;
         components.put(this.primary, component);
         this.primary++;
         return component;
@@ -68,6 +69,14 @@ public class World {
             this.addComponent(addQueue.pop());
     }
 
+    /**
+     * Возвращает компонент с выбранным id или null в случае отсутствия такового.
+     * @param id - id выбираемого Component
+     */
+    public Component getComponent(int id){
+        return components.get(id);
+    }
+    
     /**
      * Удаляет Component с выбранным id из мира.
      * @param id - id удаляемого Component
@@ -127,6 +136,10 @@ public class World {
                 
                 // Пересчитаем координаты для нестатических компонентов
                 if(!component.getValue().isStaticComponent){
+                    
+                    // Если для компонента столкновения еще не обнаружено, то начальное смещение ставим равным скорости, помноженной на время.
+                    if(!component.getValue().collision)
+                        component.getValue().d = component.getValue().velocity.scalarMultiply(1/n/frame);
                     
                     // Если мир имеет положительные размеры, рассмотрим взаимодействие компонента с его краем
                     if(this.width > 0 && this.height > 0)
@@ -198,12 +211,7 @@ public class World {
                     }
                     writeEventIntersectionWithWorld(dynamicCombonent);
                 }
-                else{
-                    dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
-                }
             }
-            else
-                dynamicCombonent.d = new Vector2D(vx, dynamicCombonent.d.getY());
 
             // Столкновение с краем мира по y
             if (this.height > 0){
@@ -225,12 +233,7 @@ public class World {
                     }
                     writeEventIntersectionWithWorld(dynamicCombonent);
                 }
-                else{
-                    dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
-                }
             }
-            else
-                dynamicCombonent.d = new Vector2D(dynamicCombonent.d.getX(), vy);
             
         }
         

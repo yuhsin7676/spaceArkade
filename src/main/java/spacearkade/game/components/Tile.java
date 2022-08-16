@@ -1,26 +1,21 @@
 package spacearkade.game.components;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import spacearkade.engine.Component;
 import spacearkade.engine.Event;
-import spacearkade.engine.StaticComponent;
-import spacearkade.game.ArkadeWorld;
 
-public class Tile extends StaticComponent{
+public class Tile extends Component{
     
-    public ArkadeWorld arkadeWorld;
     public int health = 1;
     public String soundBreake = "breakTile";
     public String soundDamage = "damageTile";
     
     public Tile(){
+        this.isStaticComponent = true;
+        this.infinityMass = true;
         this.className = "Tile";
         this.isCircle = false;
         this.size = new Vector2D(80, 20);
-    }
-
-    public Tile setWorldPointer(ArkadeWorld arkadeWorld){
-        this.arkadeWorld = arkadeWorld;
-        return this;
     }
     
     @Override
@@ -29,10 +24,10 @@ public class Tile extends StaticComponent{
             this.health -= 1;
             if(this.health <= 0){
                 this.removed();
-                this.arkadeWorld.addSound(this.soundBreake);
+                this.world.addSound(this.soundBreake);
             }
             else{
-                this.arkadeWorld.addSound(this.soundDamage);
+                this.world.addSound(this.soundDamage);
             }
         }
     }

@@ -65,36 +65,36 @@ public class ArkadeWorld extends World{
                     Component tile = tiles.get(key);
                     int number = 1 + new Random().nextInt(8);
                     if(number == 1){
-                        this.addComponent(new Bonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new Bonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new Bonus1()).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new Bonus1()).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 2){
-                        this.addComponent(new Bonus2().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new Bonus2().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new Bonus2().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new Bonus2().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 3){
-                        this.addComponent(new Bonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new Bonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new Bonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new Bonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 4){
-                        this.addComponent(new Bonus4().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new Bonus4().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new Bonus4().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new Bonus4().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 5){
-                        this.addComponent(new AntiBonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new AntiBonus1().setWorldPointer(this)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new AntiBonus1()).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new AntiBonus1()).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 6){
-                        this.addComponent(new AntiBonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new AntiBonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new AntiBonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new AntiBonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 7){
-                        this.addComponent(new AntiBonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new AntiBonus3().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new AntiBonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new AntiBonus3().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                     else if(number == 8){
-                        this.addComponent(new AntiBonus4().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
-                        this.addComponent(new AntiBonus4().setWorldPointer(this).setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
+                        this.addComponent(new AntiBonus4().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, 50);
+                        this.addComponent(new AntiBonus4().setComponentsPointer(balls)).setLocation(tile.getLocation()).setVelocity(0, -50);
                     }
                 }
                 i.remove();

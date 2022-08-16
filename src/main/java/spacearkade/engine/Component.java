@@ -3,7 +3,7 @@ package spacearkade.engine;
 import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-public abstract class Component {
+public class Component {
     
     protected String className = "Component";
     protected String typeName = "Component";
@@ -24,6 +24,7 @@ public abstract class Component {
     protected ArrayList<Event> eventIntersection;
     protected ArrayList<Event> eventHit;
     protected ArrayList<String> sounds = new ArrayList<String>();
+    public World world;
     
     //////////////////////// Методы ////////////////////////
 

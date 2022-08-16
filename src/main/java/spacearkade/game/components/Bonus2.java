@@ -14,9 +14,9 @@ public class Bonus2 extends Bonus {
         
         if(eventIntersection.className.equals("Platform")){
             if(this.balls.size() < 2)
-                this.arkadeWorld.addComponentToQueue(new Ball().setWorldPointer(this.arkadeWorld)).setLocation(this.getLocation().subtract(new Vector2D(50, 0))).setVelocity(50, 90);
+                this.world.addComponentToQueue(new Ball()).setLocation(this.getLocation().subtract(new Vector2D(50, 0))).setVelocity(50, 90);
             if(this.balls.size() < 3)
-                this.arkadeWorld.addComponentToQueue(new Ball().setWorldPointer(this.arkadeWorld)).setLocation(this.getLocation().add(new Vector2D(50, 0))).setVelocity(-50, 90);
+                this.world.addComponentToQueue(new Ball()).setLocation(this.getLocation().add(new Vector2D(50, 0))).setVelocity(-50, 90);
         }
         
         super.eventIntersectionListener(eventIntersection);

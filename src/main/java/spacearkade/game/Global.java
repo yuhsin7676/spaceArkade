@@ -152,7 +152,7 @@ public class Global {
     private static int createWorld(){
         ArkadeWorld world = new ArkadeWorld(Global.primary, 800, 600);
         int worldId = Global.primary;
-        world.addComponent(new Ball().setWorldPointer(world).setLocation(400, 300).setVelocity(0, -150));
+        world.addComponent(new Ball().setLocation(400, 300).setVelocity(0, -150));
         world.addComponent(new Platform().setLocation(400, 11));
         world.addComponent(new Platform().setLocation(400, 589));
         
@@ -169,13 +169,13 @@ public class Global {
             for(int j = 0; j < beginCompnents[k][i].length; j++){
                 switch(beginCompnents[k][i][j]){
                     case "Tile1":
-                        world.addComponent(new Tile1().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        world.addComponent(new Tile1().setLocation(40 + j*80, 110 + i*20));
                         break;
                     case "Tile2":
-                        world.addComponent(new Tile2().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        world.addComponent(new Tile2().setLocation(40 + j*80, 110 + i*20));
                         break;
                     case "Tile3":
-                        world.addComponent(new Tile3().setWorldPointer(world).setLocation(40 + j*80, 110 + i*20));
+                        world.addComponent(new Tile3().setLocation(40 + j*80, 110 + i*20));
                         break;
                 }
             }

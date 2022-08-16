@@ -13,7 +13,7 @@ public class AntiBonus1 extends Bonus {
     @Override
     public void eventIntersectionListener(Event eventIntersection) {
         if(eventIntersection.className.equals("Platform")){
-            Component platform = this.arkadeWorld.components.get(eventIntersection.id);
+            Component platform = this.world.getComponent(eventIntersection.id);
             if(platform.getSize().getX() > 80)
                 platform.setSize(platform.getSize().subtract(new Vector2D(20, 0)));
         }

@@ -1,15 +1,13 @@
 package spacearkade.game.components;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import spacearkade.engine.DynamicComponent;
+import spacearkade.engine.Component;
 import spacearkade.engine.Event;
-import spacearkade.game.ArkadeWorld;
 
-public class Ball extends DynamicComponent {
-
-    public ArkadeWorld arkadeWorld;
+public class Ball extends Component {
     
     public Ball() {
+        this.isStaticComponent = false;
         this.className = "Ball";
     }    
     
@@ -20,18 +18,13 @@ public class Ball extends DynamicComponent {
             Vector2D platformSize = eventHit.size;
             double vx = 90 * (this.location.getX() - platformLocation.getX())/(platformSize.getX()/2);
             this.velocity = new Vector2D(vx, this.velocity.getY());
-            this.arkadeWorld.addSound("impactPlatform");
+            this.world.addSound("impactPlatform");
         }
         else if(eventHit.className.equals("World")){
-            this.arkadeWorld.addSound("impactWorld");
+            this.world.addSound("impactWorld");
             if(this.location.getY() <= this.r/2 + this.r || this.location.getY() >= 600 - this.r/2 - this.r)
                 this.removed();
         }
-    }
-    
-    public Ball setWorldPointer(ArkadeWorld arkadeWorld){
-        this.arkadeWorld = arkadeWorld;
-        return this;
     }
 
     @Override

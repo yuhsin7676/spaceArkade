@@ -23,7 +23,7 @@ public class PlayerGsonBuilder {
                     String fieldName = f.getName();
                     return (fieldName.equals("player1") ||
                             fieldName.equals("player2") ||
-                            fieldName.equals("arkadeWorld") ||
+                            fieldName.equals("world") ||
                             fieldName.equals("addQueue") ||
                             fieldName.equals("balls"));
                 }
