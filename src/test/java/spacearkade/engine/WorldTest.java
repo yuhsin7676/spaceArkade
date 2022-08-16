@@ -77,11 +77,11 @@ public class WorldTest {
         
         world.addComponent(component);
         assertEquals(world.components.size(), 1);
-        assertEquals(world.getComponent(0), component);
+        assertEquals(world.getComponent(component.getId()), component);
         
         world.deleteComponent(0);
         assertEquals(world.components.size(), 0);
-        assertNull(world.getComponent(0));
+        assertNull(world.getComponent(component.getId()));
     }
 
     /**

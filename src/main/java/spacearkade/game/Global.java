@@ -152,9 +152,6 @@ public class Global {
     private static int createWorld(){
         ArkadeWorld world = new ArkadeWorld(Global.primary, 800, 600);
         int worldId = Global.primary;
-        world.addComponent(new Ball().setLocation(400, 300).setVelocity(0, -150));
-        world.addComponent(new Platform().setLocation(400, 11));
-        world.addComponent(new Platform().setLocation(400, 589));
         
         Global.addBeginCompnents(world);
         Global.mapWorld.put(worldId, world);

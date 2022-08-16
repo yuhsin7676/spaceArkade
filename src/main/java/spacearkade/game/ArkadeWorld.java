@@ -16,6 +16,7 @@ import spacearkade.game.components.Bonus1;
 import spacearkade.game.components.Bonus2;
 import spacearkade.game.components.Bonus3;
 import spacearkade.game.components.Bonus4;
+import spacearkade.game.components.Platform;
 import spacearkade.game.components.Tile3;
 
 public class ArkadeWorld extends World{
@@ -30,6 +31,9 @@ public class ArkadeWorld extends World{
     // Конструктор
     public ArkadeWorld(int id, int width, int height) {
         super(id, width, height);
+        this.addComponent(new Ball().setLocation(400, 300).setVelocity(0, -150));
+        this.addComponent(new Platform().setLocation(400, 11));
+        this.addComponent(new Platform().setLocation(400, 589));
     }
 
     @Override
@@ -149,32 +153,44 @@ public class ArkadeWorld extends World{
      * Удаляет первого игрока из мира.
      */
     public void removePlayer1(){
-        this.player1.worldPointer = null;
-        if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
-            this.player1.status = EnumStatus.NOPLAY;
-            this.status = EnumStatus.WAIT;
+        try{
+            this.player1.worldPointer = null;
+            if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
+                this.player1.status = EnumStatus.NOPLAY;
+                this.status = EnumStatus.WAIT;
+            }
+            else
+                this.player1.status = this.status;
+            this.player1 = null;
+            if(this.player2 == null)
+                this.canBeRemove = true;
         }
-        else
-            this.player1.status = this.status;
-        this.player1 = null;
-        if(this.player2 == null)
-            this.canBeRemove = true;
+        catch(Exception e){
+            System.out.println("Failed remove player1 is null");
+            e.printStackTrace();
+        }
     }
     
     /**
      * Удаляет второго игрока из мира.
      */
     public void removePlayer2(){
-        this.player2.worldPointer = null;
-        if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
-            this.player2.status = EnumStatus.NOPLAY;
-            this.status = EnumStatus.WAIT;
+        try{
+            this.player2.worldPointer = null;
+            if(this.status == EnumStatus.PLAY || this.status == EnumStatus.WAIT){
+                this.player2.status = EnumStatus.NOPLAY;
+                this.status = EnumStatus.WAIT;
+            }
+            else
+                this.player2.status = this.status;
+            this.player2 = null;
+            if(this.player1 == null)
+                this.canBeRemove = true;
         }
-        else
-            this.player2.status = this.status;
-        this.player2 = null;
-        if(this.player1 == null)
-            this.canBeRemove = true;
+        catch(Exception e){
+            System.out.println("Failed remove player2 is null");
+            e.printStackTrace();
+        }
     }
     
     /**
