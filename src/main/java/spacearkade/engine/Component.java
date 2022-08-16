@@ -35,10 +35,6 @@ public class Component {
     public final void removed(){
         canBeRemove = true;
     }
-    
-    public final void addSound(String strSound){
-        this.sounds.add("strSound");
-    }
 
     // Функции вывода
     public final Vector2D getLocation() {

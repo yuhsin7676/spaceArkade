@@ -261,7 +261,7 @@ public class World {
     
     /////////////////
     
-    private void writeEventHits(Component a1, Component a2){
+    private void writeEventHits(Component a1, Component a2, Vector2D d1, Vector2D d2){
         a1.collision = a2.collision = true;
         Event eventHit1 = new Event();
         Event eventHit2 = new Event();
@@ -273,8 +273,8 @@ public class World {
         eventHit2.className = a1.className;
         eventHit1.velocity = a2.velocity;
         eventHit2.velocity = a1.velocity;
-        eventHit1.location = a2.location;
-        eventHit2.location = a1.location;
+        eventHit1.location = a2.location.add(d2);
+        eventHit2.location = a1.location.add(d1);
         eventHit1.size = a2.size;
         eventHit2.size = a1.size;
         a1.eventHit.add(eventHit1);
@@ -360,6 +360,7 @@ public class World {
         a2.d = v20.scalarMultiply(part).add(1-part, v2);
         a1.collision = true;
         a2.collision = true;
+        writeEventHits(a1, a2, v10.scalarMultiply(part), v20.scalarMultiply(part));
 
     }
     
@@ -445,8 +446,6 @@ public class World {
             
             changeVelocityAndD(a1, a2, vn1, vn2, vt1, vt2, part);
         }
-
-        writeEventHits(a1, a2);
         
     }
     
@@ -572,7 +571,6 @@ public class World {
                     a1.d = v10;
                     a2.d = v20;
                 }
-                writeEventHits(a1, a2);
                 
             }
             
