@@ -1,14 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package spacearkade.game;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import spacearkade.engine.Component;
@@ -30,8 +22,8 @@ public class ArkadeWorldTest {
         System.out.println("constructor");
         
         ArkadeWorld arkadeWorld = new ArkadeWorld(1, 800, 600);
-        assertTrue(!arkadeWorld.haveAllPlayers());
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.havePlayers());
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
         assertEquals(arkadeWorld.getComponent(0).getClass(), Ball.class);
         assertEquals(arkadeWorld.getComponent(1).getClass(), Platform.class);
@@ -67,7 +59,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.addPlayer(new Player());
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Умножение нужно, чтобы ballVelocity был ссылкой на новый вектор, а не на ball.location;
@@ -109,7 +101,7 @@ public class ArkadeWorldTest {
         // Удаление единственного шара должно менять статус мира на LOSE и удалять игроков
         arkadeWorld.update();
         assertEquals(arkadeWorld.status, EnumStatus.LOSE);
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.havePlayers());
         
     }
     
@@ -133,7 +125,7 @@ public class ArkadeWorldTest {
         // Удаление единственной плитки должно менять статус мира на WIN и удалять игроков
         arkadeWorld.update();
         assertEquals(arkadeWorld.status, EnumStatus.WIN);
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.havePlayers());
         
     }
 
@@ -156,7 +148,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.removePlayer1();
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Повторное удаление 1-го игрока не должно ронять приложение
@@ -181,7 +173,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.removePlayer2();
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Повторное удаление 2-го игрока не должно ронять приложение
