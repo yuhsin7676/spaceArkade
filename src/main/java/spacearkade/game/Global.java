@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
+import spacearkade.DB.SQLConnetcion;
 import spacearkade.game.components.Tile1;
 import spacearkade.game.components.Tile2;
 import spacearkade.game.components.Tile3;
@@ -17,7 +18,7 @@ public class Global {
     public static Map<Integer, ArkadeWorld> mapWorld = new HashMap<Integer, ArkadeWorld>();
     public static Map<String, Player> mapPlayer = new HashMap<String, Player>();
     public static int primary = 0;
-    public static String[][][] beginCompnents = {{ 
+    public static String[][][] beginComponents = {{ 
         {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
         {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
         {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
@@ -158,10 +159,21 @@ public class Global {
     
     // Добавляет компоненты исходя из двумерного массива
     private static void addBeginCompnents(ArkadeWorld world){
-        int k = new Random().nextInt(3);
-        for(int i = 0; i < beginCompnents[k].length; i++){
-            for(int j = 0; j < beginCompnents[k][i].length; j++){
-                switch(beginCompnents[k][i][j]){
+        String[][][] choosedBegin;
+        try{
+            SQLConnetcion connection = new SQLConnetcion();
+            String[][][] b = connection.ReadDB();
+            choosedBegin = b;
+        }
+        catch(Exception e){
+            choosedBegin = beginComponents;
+            e.getMessage();
+        }
+        
+        int k = new Random().nextInt(choosedBegin.length);
+        for(int i = 0; i < choosedBegin[k].length; i++){
+            for(int j = 0; j < choosedBegin[k][i].length; j++){
+                switch(choosedBegin[k][i][j]){
                     case "Tile1":
                         world.addComponent(new Tile1().setLocation(40 + j*80, 110 + i*20));
                         break;
