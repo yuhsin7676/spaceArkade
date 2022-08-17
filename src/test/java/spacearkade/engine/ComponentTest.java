@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ComponentTest {
 
     /**
-     * Test of removed method, of class Component.
+     * Тестирование метода removed(). 
+     * При следующем вызове update() класса World компонент, в котором был выполнен метод removed() должен удалиться из мира.
      */
     @Test
     public void testRemoved() {
@@ -37,7 +38,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getLocation method, of class Component.
+     * Тестирование геттера и сеттера location. Геттер должен вернуть то же самое, что ранее было занесено в сеттер.
      */
     @Test
     public void testSetGetLocation() {
@@ -47,7 +48,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getVelocity method, of class Component.
+     * Тестирование геттера и сеттера velocity. Геттер должен вернуть то же самое, что ранее было занесено в сеттер.
      */
     @Test
     public void testSetGetVelocity() {
@@ -57,7 +58,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getSize method, of class Component.
+     * Тестирование геттера и сеттера size. Геттер должен вернуть то же самое, что ранее было занесено в сеттер.
      */
     @Test
     public void testSetGetSize() {
@@ -67,7 +68,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getRadius method, of class Component.
+     * Тестирование геттера и сеттера radius. Геттер должен вернуть то же самое, что ранее было занесено в сеттер.
      */
     @Test
     public void testSetRadius() {
@@ -77,7 +78,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getId method, of class Component.
+     * Тестирование геттера id. Должен вернуть значение защищенного поля id (объекты из пакета "package" могут работать с полем напрямую).
      */
     @Test
     public void testGetId() {
@@ -88,7 +89,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of getIsInfinityMass method, of class Component.
+     * Тестирование геттера и сеттера isInfinityMass. Геттер должен вернуть то же самое, что ранее было занесено в сеттер.
      */
     @Test
     public void testSetGetIsInfinityMass() {
@@ -98,7 +99,7 @@ public class ComponentTest {
     }
 
     /**
-     * Test of setIsCircle method, of class Component.
+     * Тестирование сеттера isCircle. Сеттер должен изменить значение поля isCircle. Метод нужен для сохранения паттерна "Builder".
      */
     @Test
     public void testSetIsCircle() {

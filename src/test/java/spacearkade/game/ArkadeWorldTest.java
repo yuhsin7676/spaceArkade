@@ -23,11 +23,11 @@ import spacearkade.game.components.Tile;
 public class ArkadeWorldTest {
 
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование конструктора ArkadeWorld. Должен создать внутри себя шар и 2 платформы и не содержать игроков.
      */
     @Test
     public void testConstructor() {
-        System.out.println("addComponent");
+        System.out.println("constructor");
         
         ArkadeWorld arkadeWorld = new ArkadeWorld(1, 800, 600);
         assertTrue(!arkadeWorld.haveAllPlayers());
@@ -40,11 +40,11 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование методов addComponent() и getComponent() (родительский метод addComponent() здесь переписан, поэтому написан тест). 
      */
     @Test
     public void testAddGetComponent() {
-        System.out.println("addComponent");
+        System.out.println("addGetComponent");
         
         ArkadeWorld arkadeWorld = new ArkadeWorld(1, 800, 600);
         Component component = new Component();
@@ -54,7 +54,7 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование метода addPlayer() на примере добавления 2-х игроков. Проверяется наличие игроков в мире, а также статус последнего.
      */
     @Test
     public void testAddTwoPlayers() {
@@ -90,7 +90,7 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Воссоздание ситуации поражения (уничтожены все шары).
      */
     @Test
     public void testPlayAndRemoveBall() {
@@ -114,7 +114,7 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Воссоздание ситуации победы (уничтожены все плитки).
      */
     @Test
     public void testPlayAndRemoveTile() {
@@ -140,7 +140,7 @@ public class ArkadeWorldTest {
     
 
     /**
-     * Test of removePlayer1 method, of class ArkadeWorld.
+     * Тестирование метода removePlayer1(). Должен удалить 1-го игрока, а в случае отсутствия такового не должно случаться ошибок.
      */
     @Test
     public void testRemovePlayer1() {
@@ -165,7 +165,7 @@ public class ArkadeWorldTest {
     }
 
     /**
-     * Test of removePlayer2 method, of class ArkadeWorld.
+     * Тестирование метода removePlayer2(). Должен удалить 2-го игрока, а в случае отсутствия такового не должно случаться ошибок.
      */
     @Test
     public void testRemovePlayer2() {

@@ -1,18 +1,17 @@
 package spacearkade.game;
 
-import spacearkade.game.components.Ball;
-import spacearkade.game.components.Platform;
-import spacearkade.game.components.Tile;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
-import spacearkade.engine.Component;
 import spacearkade.game.components.Tile1;
 import spacearkade.game.components.Tile2;
 import spacearkade.game.components.Tile3;
 
+/**
+ * Global - набор статических мапов всех миров и игроков и методов работы с ними.
+ */
 public class Global {
     
     public static Map<Integer, ArkadeWorld> mapWorld = new HashMap<Integer, ArkadeWorld>();
@@ -100,14 +99,12 @@ public class Global {
             for(Map.Entry<Integer, ArkadeWorld> entry : Global.mapWorld.entrySet()){
                 int numbPlayer = entry.getValue().addPlayer(player);
                 if(numbPlayer != 0){
-                    player.worldNumber = entry.getKey();
                     player.worldPointer = entry.getValue();
                     return;
                 }
             }
             int worldId = Global.createWorld();
             Global.mapWorld.get(worldId).addPlayer(player);
-            player.worldNumber = worldId;
             player.worldPointer = Global.mapWorld.get(worldId);
         }
     }

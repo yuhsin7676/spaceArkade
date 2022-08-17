@@ -23,8 +23,7 @@ public class WorldTest {
     }
     
     /**
-     * Test of addComponent method, 
-     * when add 3 new Components.
+     * Тестируется добавление 3-х компонентов в мир.
      */
     @org.junit.jupiter.api.Test
     public void testAddThreeComponentsIntoNewWorld() {
@@ -37,8 +36,8 @@ public class WorldTest {
     }
 
     /**
-     * Test of addComponentToQueue and commitAddQueue methods, 
-     * when add 3 new Components into Queue.
+     * Тестируется addComponentToQueue() - добавление 3-х компонентов в очередь (не в мир). 
+     * После коммита (commitAddQueue()) компоненты должны оказаться в мире.
      */
     @org.junit.jupiter.api.Test
     public void testAddComponentToQueueAndCommit() {
@@ -54,7 +53,7 @@ public class WorldTest {
     }
     
     /**
-     * Test of getComponent method when world doesn't contain Component with choosed id.
+     * Тестируется взятие несуществующего компонента из мира через getComponent(). Должен вернуть null.
      */
     @org.junit.jupiter.api.Test
     public void testGetUnexistentComponent() {
@@ -65,7 +64,7 @@ public class WorldTest {
     }
 
     /**
-     * Test of deleteComponent method, of class World.
+     * Тестируется метод deleteComponent(). Должен удалить компонент.
      */
     @org.junit.jupiter.api.Test
     public void testAddGetDeleteComponent() {
@@ -85,7 +84,7 @@ public class WorldTest {
     }
 
     /**
-     * Test of clearWorld method, of class World.
+     * Тестируется метод clearWorld(). Должен удалить все компоненты из мира.
      */
     @org.junit.jupiter.api.Test
     public void testAddThreeComponentsAndClearWorld() {
@@ -102,7 +101,7 @@ public class WorldTest {
     }
 
     /**
-     * Test of addSound method, of class World. Проверяется, что приложение не упадет
+     * Тестируется метод addSound(). Не должен выдать ошибок
      */
     @org.junit.jupiter.api.Test
     public void testAddSound() {
@@ -113,7 +112,7 @@ public class WorldTest {
     }
 
     /**
-     * Test of clearSounds method, of class World. Проверяется, что приложение не упадет
+     * Тестируется метод clearSounds(). Не должен выдать ошибок
      */
     @org.junit.jupiter.api.Test
     public void testClearSounds() {
@@ -124,7 +123,10 @@ public class WorldTest {
     }
 
     /**
-     * Test of update method, of class World.
+     * Тестируется метод update().
+     * В качестве примера взяты 2 шара, летящие друг на друга.
+     * После выполнения тестируемого метода шары должны удариться и изменить скорости и координаты на ожидаемые,
+     * а в поле eventHit каждого шара должна быть занесена информация о столкновении.
      */
     @org.junit.jupiter.api.Test
     public void testUpdate() {
