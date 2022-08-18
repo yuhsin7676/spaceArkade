@@ -9,7 +9,7 @@
 
 ## Как запустить игру?
 
-1) Скачать и установить java-jre или java-jdk 8+ (например, отсюда: https://adoptopenjdk.net/upstream.html?variant=openjdk8&jvmVariant=hotspot)
+1) Скачать и установить java-jre или java-jdk 8+ (например, отсюда: (https://adoptopenjdk.net/upstream.html?variant=openjdk8&jvmVariant=hotspot))
 2) Скачать исходный код (code->download ZIP или, если на вашем компьютере установлен git, командой: <b>git clone https://github.com/yuhsin7676/spaceArkade.git</b>)
 3) Узнать свой ip-адрес (Набрать команду в командной строке Windows: <b>ipconfig</b>, в терминале Linux: <b>ip-address</b>). Обычно это 192.168... или 10...
 4) Запустить <b>spaceArkade.jar</b> двойным кликом мыши или командой: <b>java -jar spaceArkade.jar</b>
