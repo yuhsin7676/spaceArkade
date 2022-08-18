@@ -43,7 +43,7 @@
 <b>spaceArkade.s3db</b> - файл базы данных SQLite. Редактировать его можно, например, в программе DBeaver.
 Миры храняться в таблице <b>begincomponents</b> в столбце <b>components</b> и представлены в виде массива:
 
-<code style="white-space: nowrap;">
+<code style="white-space: wrap;">
 [
 ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
 ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
