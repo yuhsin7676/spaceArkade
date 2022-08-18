@@ -10,7 +10,7 @@ import spacearkade.game.GameLoop;
 
 @Configuration
 @ComponentScan("spaceArkade")
-@PropertySource("application.properties")
+@PropertySource("classpath:application.properties")
 public class AppConfig {
  
     @Bean
