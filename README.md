@@ -29,11 +29,12 @@
 перейдите в папку <b>/BOOT-INF/classes/</b> и откройте <b>application.properties</b> текстовым редактором.
 В файле есть следующие настройки:
 
-<b>server.port</b> = 8888
-<b>db.url</b> = jdbc:sqlite:/home/ilya/spaceArkade.s3db
-<b>db.dbName</b> =
-<b>db.username</b> =
-<b>db.password</b> =
+>
+    <b>server.port</b> = 8888
+    <b>db.url</b> = jdbc:sqlite:/home/ilya/spaceArkade.s3db
+    <b>db.dbName</b> =
+    <b>db.username</b> =
+    <b>db.password</b> =
 
 Где <b>server.port</b> - число, стоящее после ip-адреса. Если изменить на 8887, то к игре нужно будет подключаться по <b>http://{ваш ip-адрес из п.3}:8887</b>,
 <b>db.url</b> - путь к файлу
@@ -43,30 +44,30 @@
 <b>spaceArkade.s3db</b> - файл базы данных SQLite. Редактировать его можно, например, в программе DBeaver.
 Миры храняться в таблице <b>begincomponents</b> в столбце <b>components</b> и представлены в виде массива:
 
-<
-[
-["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
-["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
-["Tile2","Tile2","Tile2","Tile3","     ","     ","Tile2","Tile2","Tile2","Tile2"],
-["Tile2","Tile2","Tile2","Tile3","     ","     ","Tile2","Tile2","Tile2","Tile2"],
-["     ","     ","     ","Tile3","     ","     ","Tile3","     ","     ","     "],
-["Tile1","Tile1","     ","Tile3","     ","     ","Tile3","Tile1","     ","     "],
-["Tile2","Tile2","     ","Tile3","     ","     ","     ","Tile1","Tile1","     "],
-["     ","     ","     ","Tile3","     ","     ","     ","     ","     ","     "],
-["     ","Tile2","Tile2","Tile3","     ","     ","     ","     ","     ","Tile2"],
-["     ","Tile2","Tile2","Tile3","     ","     ","     ","     ","     ","     "],
-["     ","     ","     ","     ","     ","     ","Tile3","Tile2","Tile2","     "],
-["Tile2","     ","     ","     ","     ","     ","Tile3","Tile2","Tile2","     "],
-["     ","     ","     ","     ","     ","     ","Tile3","     ","     ","     "],
-["     ","Tile1","Tile1","     ","     ","     ","Tile3","     ","Tile2","Tile2"],
-["     ","     ","Tile1","Tile3","     ","     ","Tile3","     ","Tile1","Tile1"],
-["     ","     ","     ","Tile3","     ","     ","Tile3","     ","     ","     "],
-["Tile2","Tile2","Tile2","Tile2","     ","     ","Tile3","Tile2","Tile2","Tile2"],
-["Tile2","Tile2","Tile2","Tile2","     ","     ","Tile3","Tile2","Tile2","Tile2"],
-["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
-["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"]
-]
 >
+    [
+    ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
+    ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
+    ["Tile2","Tile2","Tile2","Tile3","     ","     ","Tile2","Tile2","Tile2","Tile2"],
+    ["Tile2","Tile2","Tile2","Tile3","     ","     ","Tile2","Tile2","Tile2","Tile2"],
+    ["     ","     ","     ","Tile3","     ","     ","Tile3","     ","     ","     "],
+    ["Tile1","Tile1","     ","Tile3","     ","     ","Tile3","Tile1","     ","     "],
+    ["Tile2","Tile2","     ","Tile3","     ","     ","     ","Tile1","Tile1","     "],
+    ["     ","     ","     ","Tile3","     ","     ","     ","     ","     ","     "],
+    ["     ","Tile2","Tile2","Tile3","     ","     ","     ","     ","     ","Tile2"],
+    ["     ","Tile2","Tile2","Tile3","     ","     ","     ","     ","     ","     "],
+    ["     ","     ","     ","     ","     ","     ","Tile3","Tile2","Tile2","     "],
+    ["Tile2","     ","     ","     ","     ","     ","Tile3","Tile2","Tile2","     "],
+    ["     ","     ","     ","     ","     ","     ","Tile3","     ","     ","     "],
+    ["     ","Tile1","Tile1","     ","     ","     ","Tile3","     ","Tile2","Tile2"],
+    ["     ","     ","Tile1","Tile3","     ","     ","Tile3","     ","Tile1","Tile1"],
+    ["     ","     ","     ","Tile3","     ","     ","Tile3","     ","     ","     "],
+    ["Tile2","Tile2","Tile2","Tile2","     ","     ","Tile3","Tile2","Tile2","Tile2"],
+    ["Tile2","Tile2","Tile2","Tile2","     ","     ","Tile3","Tile2","Tile2","Tile2"],
+    ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"],
+    ["Tile3","Tile3","Tile3","Tile3","     ","     ","Tile3","Tile3","Tile3","Tile3"]
+    ]
+
 
 Здесь Tile1 - зеленая плитка
 Здесь Tile2 - желтая плитка
