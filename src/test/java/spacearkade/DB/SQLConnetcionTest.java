@@ -19,7 +19,7 @@ public class SQLConnetcionTest {
         System.out.println("ReadDB");
 
         try{
-            SQLConnetcion connection = new SQLConnetcion();
+            SQLConnection connection = new SQLConnection();
             System.out.print(connection.ReadDB().toString());
         }
         catch(Exception e){

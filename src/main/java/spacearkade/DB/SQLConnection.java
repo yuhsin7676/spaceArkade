@@ -11,14 +11,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-public class SQLConnetcion {
+@Component
+public class SQLConnection {
     
     // Данные для подключения к БД (Берем из application.properties)
-    //@Value("${db.url}")
-    private String URL = "jdbc:sqlite:/home/ilya/spaceArkade.s3db";
+    @Value("${db.url}")
+    private String URL;
     
     //@Value("${db.dbName}") надо придумать, как сделать их через аннотации
     private String DATA_BASE_NAME;
@@ -32,7 +33,7 @@ public class SQLConnetcion {
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
-
+    
     // Вывод таблицы
     public String[][][] ReadDB() throws ClassNotFoundException, SQLException{
 

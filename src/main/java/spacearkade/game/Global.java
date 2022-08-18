@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
-import spacearkade.DB.SQLConnetcion;
+import spacearkade.DB.SQLConnection;
+import spacearkade.context.ApplicationContextHolder;
 import spacearkade.game.components.Tile1;
 import spacearkade.game.components.Tile2;
 import spacearkade.game.components.Tile3;
@@ -19,70 +20,26 @@ public class Global {
     public static Map<String, Player> mapPlayer = new HashMap<String, Player>();
     public static int primary = 0;
     public static String[][][] beginComponents = {{ 
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
-        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
-        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
         {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
         {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
-        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
-        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
-        {"     ", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "     "},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"}
-    },
-        { 
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "Tile2", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile2", "Tile2", "     "},
-        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "Tile2", "Tile2", "     "},
-        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"Tile3", "Tile3", "Tile3", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
-        {"     ", "     ", "     ", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
-        {"     ", "Tile2", "Tile2", "Tile1", "     ", "     ", "Tile1", "Tile3", "Tile3", "Tile3"},
-        {"     ", "Tile2", "Tile2", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"     ", "Tile2", "     ", "Tile1", "     ", "     ", "Tile1", "     ", "     ", "     "},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"},
-        {"Tile1", "Tile1", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile1", "Tile1"}
-    },
-        { 
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile2", "Tile2", "Tile2", "Tile3", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"Tile2", "Tile2", "Tile2", "Tile3", "     ", "     ", "Tile2", "Tile2", "Tile2", "Tile2"},
-        {"     ", "     ", "     ", "Tile3", "     ", "     ", "Tile3", "     ", "     ", "     "},
-        {"Tile1", "Tile1", "     ", "Tile3", "     ", "     ", "Tile3", "Tile1", "     ", "     "},
-        {"Tile2", "Tile2", "     ", "Tile3", "     ", "     ", "     ", "Tile1", "Tile1", "     "},
-        {"     ", "     ", "     ", "Tile3", "     ", "     ", "     ", "     ", "     ", "     "},
-        {"     ", "Tile2", "Tile2", "Tile3", "     ", "     ", "     ", "     ", "     ", "Tile2"},
-        {"     ", "Tile2", "Tile2", "Tile3", "     ", "     ", "     ", "     ", "     ", "     "},
-        {"     ", "     ", "     ", "     ", "     ", "     ", "Tile3", "Tile2", "Tile2", "     "},
-        {"Tile2", "     ", "     ", "     ", "     ", "     ", "Tile3", "Tile2", "Tile2", "     "},
-        {"     ", "     ", "     ", "     ", "     ", "     ", "Tile3", "     ", "     ", "     "},
-        {"     ", "Tile1", "Tile1", "     ", "     ", "     ", "Tile3", "     ", "Tile2", "Tile2"},
-        {"     ", "     ", "Tile1", "Tile3", "     ", "     ", "Tile3", "     ", "Tile1", "Tile1"},
-        {"     ", "     ", "     ", "Tile3", "     ", "     ", "Tile3", "     ", "     ", "     "},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile3", "Tile2", "Tile2", "Tile2"},
-        {"Tile2", "Tile2", "Tile2", "Tile2", "     ", "     ", "Tile3", "Tile2", "Tile2", "Tile2"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"},
-        {"Tile3", "Tile3", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "Tile3", "Tile3"}
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"Tile2", "Tile2", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile2", "Tile2"},
+        {"Tile2", "Tile2", "Tile1", "Tile1", "     ", "     ", "Tile1", "Tile1", "Tile2", "Tile2"},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "Tile3", "Tile3", "     ", "     ", "Tile3", "Tile3", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "},
+        {"     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "}
     }
     };
 
@@ -161,13 +118,13 @@ public class Global {
     private static void addBeginCompnents(ArkadeWorld world){
         String[][][] choosedBegin;
         try{
-            SQLConnetcion connection = new SQLConnetcion();
+            SQLConnection connection = ApplicationContextHolder.getApplicationContext().getBean("getSQLConnection", SQLConnection.class);
             String[][][] b = connection.ReadDB();
             choosedBegin = b;
         }
         catch(Exception e){
             choosedBegin = beginComponents;
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
         
         int k = new Random().nextInt(choosedBegin.length);
