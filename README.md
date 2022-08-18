@@ -30,11 +30,11 @@
 В файле есть следующие настройки:
 
 >
-    <b>server.port</b> = 8888
-    <b>db.url</b> = jdbc:sqlite:/home/ilya/spaceArkade.s3db
-    <b>db.dbName</b> =
-    <b>db.username</b> =
-    <b>db.password</b> =
+    server.port = 8888
+    db.url = jdbc:sqlite:/home/ilya/spaceArkade.s3db
+    db.dbName =
+    db.username =
+    db.password =
 
 Где <b>server.port</b> - число, стоящее после ip-адреса. Если изменить на 8887, то к игре нужно будет подключаться по <b>http://{ваш ip-адрес из п.3}:8887</b>,
 <b>db.url</b> - путь к файлу
