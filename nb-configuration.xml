@@ -15,6 +15,5 @@ That way multiple projects can share the same settings (useful for formatting ru
 Any value defined here will override the pom.xml file value but is only applicable to the current project.
 -->
         <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>js/libs</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
-        <netbeans.hint.jdkPlatform>JDK_8</netbeans.hint.jdkPlatform>
     </properties>
 </project-shared-configuration>
