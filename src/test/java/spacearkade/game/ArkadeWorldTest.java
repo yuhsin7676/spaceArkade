@@ -1,14 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package spacearkade.game;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import spacearkade.engine.Component;
@@ -23,15 +15,15 @@ import spacearkade.game.components.Tile;
 public class ArkadeWorldTest {
 
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование конструктора ArkadeWorld. Должен создать внутри себя шар и 2 платформы и не содержать игроков.
      */
     @Test
     public void testConstructor() {
-        System.out.println("addComponent");
+        System.out.println("constructor");
         
         ArkadeWorld arkadeWorld = new ArkadeWorld(1, 800, 600);
-        assertTrue(!arkadeWorld.haveAllPlayers());
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.havePlayers());
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
         assertEquals(arkadeWorld.getComponent(0).getClass(), Ball.class);
         assertEquals(arkadeWorld.getComponent(1).getClass(), Platform.class);
@@ -40,11 +32,11 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование методов addComponent() и getComponent() (родительский метод addComponent() здесь переписан, поэтому написан тест). 
      */
     @Test
     public void testAddGetComponent() {
-        System.out.println("addComponent");
+        System.out.println("addGetComponent");
         
         ArkadeWorld arkadeWorld = new ArkadeWorld(1, 800, 600);
         Component component = new Component();
@@ -54,7 +46,7 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Тестирование метода addPlayer() на примере добавления 2-х игроков. Проверяется наличие игроков в мире, а также статус последнего.
      */
     @Test
     public void testAddTwoPlayers() {
@@ -67,7 +59,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.addPlayer(new Player());
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Умножение нужно, чтобы ballVelocity был ссылкой на новый вектор, а не на ball.location;
@@ -90,7 +82,7 @@ public class ArkadeWorldTest {
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Воссоздание ситуации поражения (уничтожены все шары).
      */
     @Test
     public void testPlayAndRemoveBall() {
@@ -109,12 +101,12 @@ public class ArkadeWorldTest {
         // Удаление единственного шара должно менять статус мира на LOSE и удалять игроков
         arkadeWorld.update();
         assertEquals(arkadeWorld.status, EnumStatus.LOSE);
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.havePlayers());
         
     }
     
     /**
-     * Test of addComponent method, of class ArkadeWorld.
+     * Воссоздание ситуации победы (уничтожены все плитки).
      */
     @Test
     public void testPlayAndRemoveTile() {
@@ -133,14 +125,14 @@ public class ArkadeWorldTest {
         // Удаление единственной плитки должно менять статус мира на WIN и удалять игроков
         arkadeWorld.update();
         assertEquals(arkadeWorld.status, EnumStatus.WIN);
-        assertTrue(!arkadeWorld.havePlayers());
+        assertFalse(arkadeWorld.havePlayers());
         
     }
 
     
 
     /**
-     * Test of removePlayer1 method, of class ArkadeWorld.
+     * Тестирование метода removePlayer1(). Должен удалить 1-го игрока, а в случае отсутствия такового не должно случаться ошибок.
      */
     @Test
     public void testRemovePlayer1() {
@@ -156,7 +148,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.removePlayer1();
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Повторное удаление 1-го игрока не должно ронять приложение
@@ -165,7 +157,7 @@ public class ArkadeWorldTest {
     }
 
     /**
-     * Test of removePlayer2 method, of class ArkadeWorld.
+     * Тестирование метода removePlayer2(). Должен удалить 2-го игрока, а в случае отсутствия такового не должно случаться ошибок.
      */
     @Test
     public void testRemovePlayer2() {
@@ -181,7 +173,7 @@ public class ArkadeWorldTest {
         
         arkadeWorld.removePlayer2();
         assertEquals(arkadeWorld.status, EnumStatus.WAIT);
-        assertTrue(!arkadeWorld.haveAllPlayers());
+        assertFalse(arkadeWorld.haveAllPlayers());
         assertTrue(arkadeWorld.havePlayers());
         
         // Повторное удаление 2-го игрока не должно ронять приложение

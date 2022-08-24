@@ -5,7 +5,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import spacearkade.engine.Component;
 import spacearkade.engine.EnableRelation;
 import spacearkade.engine.Event;
-import spacearkade.game.ArkadeWorld;
 
 public class Bonus extends Component {
 
